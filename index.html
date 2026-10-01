@@ -3,78 +3,109 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ClashBase Hub - Share & Find Clash Layouts</title>
+  <title>ClashBase Hub - Professional COC Layouts</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen">
+<body class="bg-neutral-950 text-slate-100 min-h-screen pb-20 select-none">
 
-  <!-- Header -->
-  <header class="border-b border-slate-800 bg-slate-950 sticky top-0 z-50">
-    <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center gap-2">
+  <!-- Top Navigation Header -->
+  <header class="sticky top-0 z-40 bg-neutral-900/90 backdrop-blur-md border-b border-neutral-800">
+    <div class="max-w-md mx-auto px-4 py-2.5 flex justify-between items-center">
       <div class="flex items-center gap-2">
-        <i class="fa-solid fa-shield-halved text-amber-500 text-2xl"></i>
-        <h1 class="text-lg sm:text-xl font-bold tracking-wide">ClashBase Hub</h1>
+        <i class="fa-solid fa-shield-halved text-amber-500 text-xl"></i>
+        <span class="font-extrabold text-lg tracking-wider bg-gradient-to-r from-amber-400 to-amber-600 bg-clip-text text-transparent">ClashBase</span>
       </div>
-      
-      <div class="flex items-center gap-2 sm:gap-3">
-        <!-- Language Switcher Button -->
-        <button onclick="toggleLanguage()" class="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs sm:text-sm font-semibold px-2.5 py-1.5 rounded-lg border border-slate-700 transition">
-          <i class="fa-solid fa-globe text-amber-400"></i>
+
+      <div class="flex items-center gap-2">
+        <!-- Language Switcher -->
+        <button onclick="toggleLanguage()" class="px-2 py-1 rounded bg-neutral-800 hover:bg-neutral-700 text-xs font-semibold border border-neutral-700 text-slate-300">
           <span id="langBtnText">English</span>
         </button>
 
-        <button onclick="openModal()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-semibold px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm transition flex items-center">
-          <i class="fa-solid fa-plus mr-1"></i> <span data-i18n="addBaseBtn">Base တင်မည်</span>
+        <!-- TH Level Dropdown Filter Button -->
+        <div class="relative">
+          <button onclick="toggleThMenu()" class="flex items-center gap-1.5 bg-neutral-800 hover:bg-neutral-700 text-amber-400 px-2.5 py-1 rounded-lg border border-neutral-700 text-xs font-bold transition">
+            <span id="selectedThText">ALL TH</span>
+            <i class="fa-solid fa-chevron-down text-[10px]"></i>
+          </button>
+
+          <!-- TH Dropdown List -->
+          <div id="thDropdown" class="hidden absolute right-0 mt-2 w-44 bg-neutral-900 border border-neutral-800 rounded-xl shadow-2xl overflow-y-auto max-h-80 z-50 p-1">
+            <button onclick="filterByTh('ALL')" class="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold hover:bg-neutral-800 rounded-lg text-left text-slate-200">
+              <i class="fa-solid fa-layer-group text-amber-400 w-4"></i> ALL TH
+            </button>
+            <div id="thListItems"></div>
+          </div>
+        </div>
+
+        <!-- Post Base Button -->
+        <button onclick="openModal()" class="bg-amber-500 hover:bg-amber-600 text-neutral-950 font-bold px-2.5 py-1 rounded-lg text-xs flex items-center gap-1 transition">
+          <i class="fa-solid fa-plus"></i> <span data-i18n="addBaseBtn">Base တင်မည်</span>
         </button>
       </div>
     </div>
   </header>
 
   <!-- Banner Ad Slot -->
-  <div class="max-w-6xl mx-auto px-4 my-4">
-    <div class="w-full h-20 bg-slate-800/40 border border-dashed border-slate-700 rounded-lg flex items-center justify-center text-slate-500 text-xs sm:text-sm">
+  <div class="max-w-md mx-auto px-4 mt-3">
+    <div class="w-full h-14 bg-neutral-900 border border-dashed border-neutral-800 rounded-xl flex items-center justify-center text-neutral-500 text-xs">
       <span data-i18n="adPlaceholder">[ ကြော်ငြာနေရာ - Banner Ad ]</span>
     </div>
   </div>
 
-  <!-- Main Content -->
-  <main class="max-w-6xl mx-auto px-4 py-4">
-    <h2 class="text-base sm:text-lg font-bold mb-4 text-slate-300" data-i18n="latestBases">နောက်ဆုံးတင်ထားသော Base များ</h2>
-    <div id="basesGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-      <div class="text-slate-400 text-sm col-span-full py-8 text-center" data-i18n="loadingText">Loading bases...</div>
+  <!-- Feed Container -->
+  <main class="max-w-md mx-auto px-3 py-3">
+    <div id="basesGrid" class="space-y-4">
+      <div class="text-slate-400 text-sm py-12 text-center" data-i18n="loadingText">Loading bases...</div>
     </div>
   </main>
 
+  <!-- Bottom Navigation Bar -->
+  <nav class="fixed bottom-0 inset-x-0 bg-neutral-900/95 backdrop-blur-md border-t border-neutral-800 z-40 max-w-md mx-auto">
+    <div class="flex justify-around items-center py-2.5 text-neutral-400 text-base">
+      <button onclick="filterByTh('ALL')" class="flex flex-col items-center gap-0.5 text-amber-500">
+        <i class="fa-solid fa-house"></i>
+        <span class="text-[10px]" data-i18n="navHome">Home</span>
+      </button>
+      <button onclick="filterByCategory('WAR')" class="flex flex-col items-center gap-0.5 hover:text-slate-200">
+        <i class="fa-solid fa-crosshairs"></i>
+        <span class="text-[10px]">War</span>
+      </button>
+      <button onclick="filterByCategory('RANK')" class="flex flex-col items-center gap-0.5 hover:text-slate-200">
+        <i class="fa-solid fa-trophy"></i>
+        <span class="text-[10px]">Rank</span>
+      </button>
+      <button onclick="openModal()" class="flex flex-col items-center gap-0.5 hover:text-slate-200">
+        <i class="fa-solid fa-circle-plus text-amber-500 text-lg"></i>
+        <span class="text-[10px]" data-i18n="navPost">Post</span>
+      </button>
+    </div>
+  </nav>
+
   <!-- Upload Modal -->
-  <div id="uploadModal" class="fixed inset-0 bg-black/70 flex items-center justify-center p-4 hidden z-50">
-    <div class="bg-slate-800 border border-slate-700 rounded-xl max-w-md w-full p-6">
-      <h2 class="text-lg font-bold mb-4" data-i18n="modalTitle">Base အသစ်တင်ရန်</h2>
+  <div id="uploadModal" class="fixed inset-0 bg-black/80 flex items-center justify-center p-4 hidden z-50">
+    <div class="bg-neutral-900 border border-neutral-800 rounded-2xl max-w-md w-full p-5 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center mb-3">
+        <h2 class="text-base font-bold" data-i18n="modalTitle">Base အသစ်တင်ရန်</h2>
+        <button onclick="closeModal()" class="text-neutral-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+
       <form onsubmit="handleUpload(event)" class="space-y-3">
         <div>
-          <label class="text-xs text-slate-400 block mb-1" data-i18n="labelTitle">ခေါင်းစဉ်</label>
-          <input type="text" id="baseTitle" required placeholder="ဥပမာ - Anti-2 Star CWL Base" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-sm text-white focus:outline-none focus:border-amber-500">
+          <label class="text-xs text-neutral-400 block mb-1" data-i18n="labelTitle">ခေါင်းစဉ်</label>
+          <input type="text" id="baseTitle" required placeholder="ဥပမာ - Anti-2 Star CWL Base" class="w-full bg-neutral-950 border border-neutral-800 rounded-lg p-2 text-xs text-white focus:outline-none focus:border-amber-500">
         </div>
+
         <div class="grid grid-cols-2 gap-2">
           <div>
-            <label class="text-xs text-slate-400 block mb-1" data-i18n="labelTownHall">Town Hall</label>
-            <select id="thLevel" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-sm text-white">
-              <option value="TH 18">TH 18</option>
-              <option value="TH 17">TH 17</option>
-              <option value="TH 16">TH 16</option>
-              <option value="TH 15">TH 15</option>
-              <option value="TH 14">TH 14</option>
-              <option value="TH 13">TH 13</option>
-              <option value="TH 12">TH 12</option>
-              <option value="TH 11">TH 11</option>
-              <option value="TH 10">TH 10</option>
-              <option value="TH 9">TH 9</option>
-            </select>
+            <label class="text-xs text-neutral-400 block mb-1" data-i18n="labelTownHall">Town Hall</label>
+            <select id="thLevel" class="w-full bg-neutral-950 border border-neutral-800 rounded-lg p-2 text-xs text-white"></select>
           </div>
           <div>
-            <label class="text-xs text-slate-400 block mb-1" data-i18n="labelBaseType">Base အမျိုးအစား</label>
-            <select id="baseType" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-sm text-white font-medium">
+            <label class="text-xs text-neutral-400 block mb-1" data-i18n="labelBaseType">အမျိုးအစား</label>
+            <select id="baseType" class="w-full bg-neutral-950 border border-neutral-800 rounded-lg p-2 text-xs text-white font-medium">
               <option value="RANK">RANK</option>
               <option value="CWL">CWL</option>
               <option value="WAR">WAR</option>
@@ -84,17 +115,20 @@
             </select>
           </div>
         </div>
+
         <div>
-          <label class="text-xs text-slate-400 block mb-1" data-i18n="labelLink">COC Layout Link</label>
-          <input type="url" id="baseLink" required placeholder="https://link.clashofclans.com/..." class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-sm text-white focus:outline-none focus:border-amber-500">
+          <label class="text-xs text-neutral-400 block mb-1" data-i18n="labelLink">COC Layout Link</label>
+          <input type="url" id="baseLink" required placeholder="https://link.clashofclans.com/..." class="w-full bg-neutral-950 border border-neutral-800 rounded-lg p-2 text-xs text-white focus:outline-none focus:border-amber-500">
         </div>
+
         <div>
-          <label class="text-xs text-slate-400 block mb-1" data-i18n="labelImage">Base ဓာတ်ပုံ (Gallery မှ ရွေးပါ)</label>
-          <input type="file" id="imageFile" accept="image/*" required class="w-full text-sm text-slate-400 file:mr-3 file:py-2 file:px-4 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-slate-700 file:text-amber-400 hover:file:bg-slate-600 cursor-pointer">
+          <label class="text-xs text-neutral-400 block mb-1" data-i18n="labelImage">Base ဓာတ်ပုံ (Gallery မှ ရွေးပါ)</label>
+          <input type="file" id="imageFile" accept="image/*" required class="w-full text-xs text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-neutral-800 file:text-amber-400 hover:file:bg-neutral-700 cursor-pointer">
         </div>
-        <div class="flex justify-end gap-2 pt-3">
-          <button type="button" onclick="closeModal()" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded text-sm" data-i18n="cancelBtn">ပိတ်မည်</button>
-          <button type="submit" id="submitBtn" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 font-bold text-slate-950 rounded text-sm" data-i18n="submitBtn">တင်မည်</button>
+
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModal()" class="px-3 py-1.5 bg-neutral-800 hover:bg-neutral-700 rounded-lg text-xs" data-i18n="cancelBtn">ပိတ်မည်</button>
+          <button type="submit" id="submitBtn" class="px-4 py-1.5 bg-amber-500 hover:bg-amber-600 font-bold text-neutral-950 rounded-lg text-xs" data-i18n="submitBtn">တင်မည်</button>
         </div>
       </form>
     </div>
@@ -102,56 +136,209 @@
 
   <script>
     const SUPABASE_URL = "https://jzsodpshhihelemowzvn.supabase.co";
-    // lowercase 'eyJ...' ဖြင့် မှန်ကန်စွာ ထည့်သွင်းထားပါသည်
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp6c29kcHNoaGloZWxlbW93enZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA4MjkwNDQsImV4cCI6MjEwNjQwNTA0NH0.x-gP_4a4rcKAjAhNgtegDlq8XD542Y3ufH54J6FVWlo";
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const TH_LEVELS = Array.from({length: 15}, (_, i) => 18 - i); // TH 18 down to TH 4
+
+    let allBases = [];
+    let currentFilterTh = 'ALL';
+    let currentFilterCat = 'ALL';
+    let currentLang = localStorage.getItem('site_lang') || 'my';
 
     const translations = {
       my: {
         switchText: "English",
         addBaseBtn: "Base တင်မည်",
         adPlaceholder: "[ ကြော်ငြာနေရာ - Banner Ad ]",
-        latestBases: "နောက်ဆုံးတင်ထားသော Base များ",
         loadingText: "ဒေတာဆွဲတင်နေပါသည်...",
-        noBasesText: "တင်ထားသော Base မရှိသေးပါ။ ပထမဆုံး Base စတင်တင်ကြည့်ပါ!",
+        noBasesText: "ရွေးချယ်ထားသော Base မရှိသေးပါ။",
         modalTitle: "Base အသစ်တင်ရန်",
         labelTitle: "ခေါင်းစဉ်",
         labelTownHall: "Town Hall",
-        labelBaseType: "Base အမျိုးအစား",
+        labelBaseType: "အမျိုးအစား",
         labelLink: "COC Layout Link",
         labelImage: "Base ဓာတ်ပုံ (Gallery မှ ရွေးပါ)",
         cancelBtn: "ပိတ်မည်",
         submitBtn: "တင်မည်",
-        uploading: "ပုံတင်နေပါသည်...",
-        copyBtn: "Copy",
+        uploading: "တင်နေပါသည်...",
+        copyBtn: "Copy Layout",
+        copied: "Copied!",
         errorPrefix: "အမှားဖြစ်သွားပါသည်: ",
         successMsg: "Base အောင်မြင်စွာ တင်ပြီးပါပြီ!",
-        placeholderTitle: "ဥပမာ - Anti-2 Star CWL Base"
+        placeholderTitle: "ဥပမာ - Anti-2 Star CWL Base",
+        navHome: "Home",
+        navPost: "တင်မည်",
+        timeJustNow: "ခုနကတင်ထားသည်",
+        timeAgo: "က"
       },
       en: {
         switchText: "မြန်မာစာ",
-        addBaseBtn: "Submit Base",
+        addBaseBtn: "Post Base",
         adPlaceholder: "[ Advertisement - Banner Ad ]",
-        latestBases: "Latest Layouts",
         loadingText: "Loading layouts...",
-        noBasesText: "No bases found yet. Be the first to share one!",
-        modalTitle: "Share New Base Layout",
-        labelTitle: "Layout Title",
-        labelTownHall: "Town Hall Level",
-        labelBaseType: "Base Category",
-        labelLink: "COC In-Game Link",
-        labelImage: "Upload Base Screenshot",
+        noBasesText: "No bases found in this filter.",
+        modalTitle: "Share New Base",
+        labelTitle: "Base Title",
+        labelTownHall: "Town Hall",
+        labelBaseType: "Category",
+        labelLink: "COC Link",
+        labelImage: "Base Screenshot (Gallery)",
         cancelBtn: "Cancel",
-        submitBtn: "Publish Base",
+        submitBtn: "Publish",
         uploading: "Uploading...",
-        copyBtn: "Copy Link",
-        errorPrefix: "Error occurred: ",
-        successMsg: "Base layout submitted successfully!",
-        placeholderTitle: "e.g. Anti-2 Star CWL Base"
+        copyBtn: "Copy Layout",
+        copied: "Copied!",
+        errorPrefix: "Error: ",
+        successMsg: "Base shared successfully!",
+        placeholderTitle: "e.g. Anti-2 Star CWL Base",
+        navHome: "Home",
+        navPost: "Post",
+        timeJustNow: "Just now",
+        timeAgo: "ago"
       }
     };
 
-    let currentLang = localStorage.getItem('site_lang') || 'my';
+    function initThOptions() {
+      const thList = document.getElementById('thListItems');
+      const thSelect = document.getElementById('thLevel');
+
+      thList.innerHTML = TH_LEVELS.map(th => `
+        <button onclick="filterByTh('TH ${th}')" class="w-full flex items-center justify-between px-3 py-2 text-xs font-semibold hover:bg-neutral-800 rounded-lg text-slate-200">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+            <span>TH ${th}</span>
+          </div>
+          <span class="text-[10px] text-neutral-500">Level ${th}</span>
+        </button>
+      `).join('');
+
+      thSelect.innerHTML = TH_LEVELS.map(th => `<option value="TH ${th}">TH ${th}</option>`).join('');
+    }
+
+    function toggleThMenu() {
+      document.getElementById('thDropdown').classList.toggle('hidden');
+    }
+
+    function filterByTh(th) {
+      currentFilterTh = th;
+      document.getElementById('selectedThText').innerText = th;
+      document.getElementById('thDropdown').classList.add('hidden');
+      renderBases();
+    }
+
+    function filterByCategory(cat) {
+      currentFilterCat = cat;
+      renderBases();
+    }
+
+    function formatTime(dateStr) {
+      const d = new Date(dateStr);
+      const now = new Date();
+      const diffSec = Math.floor((now - d) / 1000);
+      const isMm = currentLang === 'my';
+
+      if (diffSec < 60) return isMm ? "ခုနက" : "Just now";
+      const diffMin = Math.floor(diffSec / 60);
+      if (diffMin < 60) return `${diffMin}m ${isMm ? "က" : "ago"}`;
+      const diffHr = Math.floor(diffMin / 60);
+      if (diffHr < 24) return `${diffHr}h ${isMm ? "က" : "ago"}`;
+      const diffDay = Math.floor(diffHr / 24);
+      return `${diffDay}d ${isMm ? "က" : "ago"}`;
+    }
+
+    function renderBases() {
+      const grid = document.getElementById('basesGrid');
+      const t = translations[currentLang];
+
+      let filtered = allBases;
+      if (currentFilterTh !== 'ALL') {
+        filtered = filtered.filter(b => b.th_level === currentFilterTh);
+      }
+      if (currentFilterCat !== 'ALL') {
+        filtered = filtered.filter(b => b.base_type === currentFilterCat);
+      }
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div class="text-slate-400 text-xs col-span-full py-12 text-center">${t.noBasesText}</div>`;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(b => `
+        <div class="bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden shadow-lg flex flex-col">
+          <!-- Image Section -->
+          <div class="relative bg-neutral-950">
+            <img src="${b.image_url}" alt="${b.title}" class="w-full h-56 object-cover" onerror="this.src='https://placehold.co/600x400/1e293b/94a3b8?text=COC+Base'">
+            
+            <!-- Badges -->
+            <div class="absolute top-2.5 left-2.5 flex items-center gap-1.5">
+              <span class="bg-amber-500 text-neutral-950 text-[11px] font-black px-2 py-0.5 rounded-md shadow">${b.th_level}</span>
+              <span class="bg-neutral-900/90 text-amber-400 border border-neutral-700 text-[10px] font-bold px-2 py-0.5 rounded-md backdrop-blur-sm">${b.base_type}</span>
+            </div>
+          </div>
+
+          <!-- Bottom Meta & Actions -->
+          <div class="p-3">
+            <h3 class="font-bold text-sm mb-2.5 line-clamp-1 text-slate-100">${b.title}</h3>
+            
+            <div class="flex items-center justify-between text-neutral-400 text-xs border-t border-neutral-800/80 pt-2.5">
+              <!-- Stats: Copies & Time -->
+              <div class="flex items-center gap-4">
+                <span class="flex items-center gap-1 font-semibold text-slate-300">
+                  <i class="fa-regular fa-copy text-amber-400"></i>
+                  <span id="count-${b.id}">${b.copy_count || 0}</span>
+                </span>
+                <span class="flex items-center gap-1 text-[11px]">
+                  <i class="fa-regular fa-clock"></i>
+                  <span>${formatTime(b.created_at)}</span>
+                </span>
+              </div>
+
+              <!-- Copy Action -->
+              <button onclick="handleCopy('${b.id}', '${b.link}', this)" class="bg-amber-500 hover:bg-amber-600 text-neutral-950 font-bold px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5 transition">
+                <i class="fa-solid fa-download"></i> <span>${t.copyBtn}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function handleCopy(baseId, link, btn) {
+      try {
+        await navigator.clipboard.writeText(link);
+      } catch (e) {
+        window.open(link, '_blank');
+      }
+
+      // Update Count in Database
+      try {
+        await db.rpc('increment_copy', { base_id: baseId });
+        const countSpan = document.getElementById(`count-${baseId}`);
+        if (countSpan) countSpan.innerText = parseInt(countSpan.innerText || 0) + 1;
+      } catch (err) {
+        console.error(err);
+      }
+
+      // Button feedback
+      const originalText = btn.innerHTML;
+      btn.innerHTML = `<i class="fa-solid fa-check"></i> ${translations[currentLang].copied}`;
+      btn.classList.replace('bg-amber-500', 'bg-emerald-500');
+      
+      setTimeout(() => {
+        btn.innerHTML = originalText;
+        btn.classList.replace('bg-emerald-500', 'bg-amber-500');
+        window.open(link, '_blank');
+      }, 700);
+    }
+
+    async function fetchBases() {
+      const { data, error } = await db.from('bases').select('*').order('created_at', { ascending: false });
+      if (!error && data) {
+        allBases = data;
+        renderBases();
+      }
+    }
 
     function setLanguage(lang) {
       currentLang = lang;
@@ -167,7 +354,7 @@
       });
 
       document.getElementById('baseTitle').placeholder = t.placeholderTitle;
-      fetchBases();
+      renderBases();
     }
 
     function toggleLanguage() {
@@ -176,36 +363,6 @@
 
     function openModal() { document.getElementById('uploadModal').classList.remove('hidden'); }
     function closeModal() { document.getElementById('uploadModal').classList.add('hidden'); }
-
-    async function fetchBases() {
-      const { data, error } = await db.from('bases').select('*').order('created_at', { ascending: false });
-      const grid = document.getElementById('basesGrid');
-      const t = translations[currentLang];
-      
-      if (error || !data || data.length === 0) {
-        grid.innerHTML = `<div class="text-slate-400 text-sm col-span-full py-8 text-center">${t.noBasesText}</div>`;
-        return;
-      }
-
-      grid.innerHTML = data.map(b => `
-        <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-lg flex flex-col hover:border-slate-600 transition">
-          <div class="relative">
-            <img src="${b.image_url}" alt="${b.title}" class="w-full h-48 object-cover" onerror="this.src='https://placehold.co/600x400/1e293b/94a3b8?text=Base+Photo'">
-            <span class="absolute top-2 left-2 bg-amber-500 text-slate-950 text-xs font-bold px-2 py-1 rounded">${b.th_level}</span>
-            <span class="absolute top-2 right-2 bg-slate-900/80 text-amber-400 text-xs font-bold px-2.5 py-1 rounded backdrop-blur-sm border border-slate-700">${b.base_type}</span>
-          </div>
-          <div class="p-4 flex-1 flex flex-col justify-between">
-            <h3 class="font-bold text-lg mb-3 line-clamp-1">${b.title}</h3>
-            <div class="flex items-center justify-between pt-3 border-t border-slate-700">
-              <span class="text-xs text-slate-400">COC Layout</span>
-              <a href="${b.link}" target="_blank" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-4 py-1.5 rounded-lg text-sm flex items-center gap-1 transition">
-                <i class="fa-solid fa-copy"></i> ${t.copyBtn}
-              </a>
-            </div>
-          </div>
-        </div>
-      `).join('');
-    }
 
     async function handleUpload(e) {
       e.preventDefault();
@@ -217,38 +374,23 @@
       try {
         const fileInput = document.getElementById('imageFile');
         const file = fileInput.files[0];
-        
         if (!file) throw new Error("ဓာတ်ပုံ ရွေးချယ်ပေးပါ");
 
         const fileExt = file.name.split('.').pop();
         const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
 
-        // 1. Upload file to Supabase Storage Bucket
-        const { data: uploadData, error: uploadError } = await db.storage
-          .from('base-images')
-          .upload(fileName, file);
-
+        const { error: uploadError } = await db.storage.from('base-images').upload(fileName, file);
         if (uploadError) throw uploadError;
 
-        // 2. Get Public URL
-        const { data: urlData } = db.storage
-          .from('base-images')
-          .getPublicUrl(fileName);
+        const { data: urlData } = db.storage.from('base-images').getPublicUrl(fileName);
 
-        const imageUrl = urlData.publicUrl;
-
-        // 3. Insert record into bases table
         const title = document.getElementById('baseTitle').value;
         const th_level = document.getElementById('thLevel').value;
         const base_type = document.getElementById('baseType').value;
         const link = document.getElementById('baseLink').value;
 
         const { error: dbError } = await db.from('bases').insert([{ 
-          title, 
-          th_level, 
-          base_type, 
-          link, 
-          image_url: imageUrl 
+          title, th_level, base_type, link, image_url: urlData.publicUrl, copy_count: 0
         }]);
 
         if (dbError) throw dbError;
@@ -257,7 +399,6 @@
         e.target.reset();
         closeModal();
         fetchBases();
-
       } catch (err) {
         alert(t.errorPrefix + err.message);
       } finally {
@@ -266,7 +407,16 @@
       }
     }
 
+    // Close Dropdown when click outside
+    window.addEventListener('click', (e) => {
+      if (!e.target.closest('#thDropdown') && !e.target.closest('button[onclick="toggleThMenu()"]')) {
+        document.getElementById('thDropdown').classList.add('hidden');
+      }
+    });
+
+    initThOptions();
     setLanguage(currentLang);
+    fetchBases();
   </script>
 </body>
 </html>
