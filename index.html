@@ -14,7 +14,7 @@
 </head>
 <body class="bg-neutral-950 text-slate-100 min-h-screen pb-24 select-none">
 
-  <!-- Top Navigation Header -->
+  <!-- Header -->
   <header class="sticky top-0 z-40 bg-neutral-900/95 backdrop-blur-md border-b border-neutral-800">
     <div class="max-w-md mx-auto px-4 py-2.5 flex justify-between items-center">
       <div class="flex items-center gap-1.5 cursor-pointer" onclick="resetHome()">
@@ -28,31 +28,28 @@
           <span id="langBtnText">English</span>
         </button>
 
-        <!-- Sort Filter (NEW / POPULAR / ALL) -->
+        <!-- Sort Menu -->
         <div class="relative">
-          <button onclick="toggleSortMenu()" class="flex items-center gap-1 bg-neutral-800 hover:bg-neutral-700 text-amber-400 px-2 py-1 rounded-lg border border-neutral-700 text-xs font-bold transition">
+          <button id="sortBtn" onclick="toggleSortMenu(event)" class="flex items-center gap-1 bg-neutral-800 hover:bg-neutral-700 text-amber-400 px-2.5 py-1 rounded-lg border border-neutral-700 text-xs font-bold transition">
             <span id="selectedSortText">NEW</span>
             <i class="fa-solid fa-chevron-down text-[9px]"></i>
           </button>
           <div id="sortDropdown" class="hidden absolute right-0 mt-2 w-32 bg-neutral-900 border border-neutral-800 rounded-xl shadow-2xl z-50 p-1">
             <button onclick="setSort('NEW')" class="w-full text-left px-3 py-1.5 text-xs font-bold hover:bg-neutral-800 rounded-lg text-amber-400 flex items-center justify-between">
-              <span>NEW</span>
-              <i class="fa-solid fa-bolt text-[10px]"></i>
+              <span>NEW</span> <i class="fa-solid fa-bolt text-[10px]"></i>
             </button>
             <button onclick="setSort('POPULAR')" class="w-full text-left px-3 py-1.5 text-xs font-bold hover:bg-neutral-800 rounded-lg text-slate-200 flex items-center justify-between">
-              <span>POPULAR</span>
-              <i class="fa-solid fa-fire text-amber-500 text-[10px]"></i>
+              <span>POPULAR</span> <i class="fa-solid fa-fire text-amber-500 text-[10px]"></i>
             </button>
             <button onclick="setSort('ALL')" class="w-full text-left px-3 py-1.5 text-xs font-bold hover:bg-neutral-800 rounded-lg text-slate-300 flex items-center justify-between">
-              <span>ALL</span>
-              <i class="fa-solid fa-layer-group text-[10px]"></i>
+              <span>ALL</span> <i class="fa-solid fa-layer-group text-[10px]"></i>
             </button>
           </div>
         </div>
 
         <!-- TH Level Dropdown Filter -->
         <div class="relative">
-          <button onclick="toggleThMenu()" class="flex items-center gap-1 bg-neutral-800 hover:bg-neutral-700 text-amber-400 px-2.5 py-1 rounded-lg border border-neutral-700 text-xs font-bold transition">
+          <button id="thBtn" onclick="toggleThMenu(event)" class="flex items-center gap-1 bg-neutral-800 hover:bg-neutral-700 text-amber-400 px-2.5 py-1 rounded-lg border border-neutral-700 text-xs font-bold transition">
             <span id="selectedThText">ALL TH</span>
             <i class="fa-solid fa-chevron-down text-[9px]"></i>
           </button>
@@ -66,19 +63,19 @@
       </div>
     </div>
 
-    <!-- Category Filter Tabs -->
+    <!-- Category Tabs -->
     <div class="max-w-md mx-auto px-3 pb-2 pt-1 flex items-center gap-1.5 overflow-x-auto no-scrollbar text-xs font-bold">
-      <button onclick="filterByCategory('ALL', this)" class="cat-pill px-3 py-1 rounded-lg bg-amber-500 text-neutral-950 whitespace-nowrap transition">All</button>
-      <button onclick="filterByCategory('WAR', this)" class="cat-pill px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 hover:bg-neutral-700 whitespace-nowrap transition">War</button>
-      <button onclick="filterByCategory('CWL', this)" class="cat-pill px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 hover:bg-neutral-700 whitespace-nowrap transition">CWL</button>
-      <button onclick="filterByCategory('FARMING', this)" class="cat-pill px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 hover:bg-neutral-700 whitespace-nowrap transition">Farming</button>
-      <button onclick="filterByCategory('HYBRID', this)" class="cat-pill px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 hover:bg-neutral-700 whitespace-nowrap transition">Hybrid</button>
-      <button onclick="filterByCategory('RANK', this)" class="cat-pill px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 hover:bg-neutral-700 whitespace-nowrap transition">Rank</button>
-      <button onclick="filterByCategory('FUNNY', this)" class="cat-pill px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 hover:bg-neutral-700 whitespace-nowrap transition">Funny</button>
+      <button onclick="filterByCategory('ALL', this)" class="cat-pill px-3 py-1 rounded-lg bg-amber-500 text-neutral-950 whitespace-nowrap">All</button>
+      <button onclick="filterByCategory('WAR', this)" class="cat-pill px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 whitespace-nowrap">War</button>
+      <button onclick="filterByCategory('CWL', this)" class="cat-pill px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 whitespace-nowrap">CWL</button>
+      <button onclick="filterByCategory('FARMING', this)" class="cat-pill px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 whitespace-nowrap">Farming</button>
+      <button onclick="filterByCategory('HYBRID', this)" class="cat-pill px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 whitespace-nowrap">Hybrid</button>
+      <button onclick="filterByCategory('RANK', this)" class="cat-pill px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 whitespace-nowrap">Rank</button>
+      <button onclick="filterByCategory('FUNNY', this)" class="cat-pill px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 whitespace-nowrap">Funny</button>
     </div>
   </header>
 
-  <!-- Banner Ad Slot -->
+  <!-- Banner Ad -->
   <div class="max-w-md mx-auto px-4 mt-2">
     <div class="w-full h-12 bg-neutral-900 border border-dashed border-neutral-800 rounded-xl flex items-center justify-center text-neutral-500 text-xs">
       <span data-i18n="adPlaceholder">[ ကြော်ငြာနေရာ - Banner Ad ]</span>
@@ -92,12 +89,12 @@
     </div>
   </main>
 
-  <!-- Floating Action Button (+ Post Base) -->
-  <button onclick="openModal()" class="fixed bottom-16 right-4 z-40 bg-emerald-500 hover:bg-emerald-600 text-neutral-950 w-12 h-12 rounded-full shadow-2xl flex items-center justify-center text-xl transition transform active:scale-95 border-2 border-emerald-400/40">
+  <!-- Floating Button (+ Post Base) -->
+  <button onclick="openModal()" class="fixed bottom-16 right-4 z-40 bg-emerald-500 hover:bg-emerald-600 text-neutral-950 w-12 h-12 rounded-full shadow-2xl flex items-center justify-center text-xl transition transform active:scale-95 border-2 border-emerald-400/40 cursor-pointer">
     <i class="fa-solid fa-plus font-black"></i>
   </button>
 
-  <!-- Bottom Navigation Bar -->
+  <!-- Bottom Nav -->
   <nav class="fixed bottom-0 inset-x-0 bg-neutral-900/95 backdrop-blur-md border-t border-neutral-800 z-30 max-w-md mx-auto">
     <div class="flex justify-around items-center py-2.5 text-neutral-400 text-base">
       <button onclick="resetHome()" class="flex flex-col items-center gap-0.5 text-amber-500">
@@ -124,7 +121,7 @@
     <div class="bg-neutral-900 border border-neutral-800 rounded-2xl max-w-md w-full p-5 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center mb-3">
         <h2 class="text-base font-bold" data-i18n="modalTitle">Base အသစ်တင်ရန်</h2>
-        <button onclick="closeModal()" class="text-neutral-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+        <button type="button" onclick="closeModal()" class="text-neutral-400 hover:text-white p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
       </div>
 
       <form onsubmit="handleUpload(event)" class="space-y-3">
@@ -245,12 +242,14 @@
       thSelect.innerHTML = TH_LEVELS.map(th => `<option value="TH ${th}">TH ${th}</option>`).join('');
     }
 
-    function toggleThMenu() {
+    function toggleThMenu(e) {
+      if (e) e.stopPropagation();
       document.getElementById('sortDropdown').classList.add('hidden');
       document.getElementById('thDropdown').classList.toggle('hidden');
     }
 
-    function toggleSortMenu() {
+    function toggleSortMenu(e) {
+      if (e) e.stopPropagation();
       document.getElementById('thDropdown').classList.add('hidden');
       document.getElementById('sortDropdown').classList.toggle('hidden');
     }
@@ -272,24 +271,24 @@
     function filterByCategory(cat, btn) {
       currentFilterCat = cat;
       document.querySelectorAll('.cat-pill').forEach(b => {
-        b.classList.remove('bg-amber-500', 'text-neutral-950');
-        b.classList.add('bg-neutral-800', 'text-slate-300');
+        b.className = "cat-pill px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 whitespace-nowrap";
       });
-      btn.classList.add('bg-amber-500', 'text-neutral-950');
-      btn.classList.remove('bg-neutral-800', 'text-slate-300');
+      if (btn) {
+        btn.className = "cat-pill px-3 py-1 rounded-lg bg-amber-500 text-neutral-950 whitespace-nowrap";
+      }
       renderBases();
     }
 
     function filterByCategoryDirect(cat) {
-      const targetBtn = Array.from(document.querySelectorAll('.cat-pill')).find(b => b.innerText.toUpperCase() === cat.toUpperCase());
-      if (targetBtn) filterByCategory(cat, targetBtn);
+      const targetBtn = Array.from(document.querySelectorAll('.cat-pill')).find(b => b.innerText.trim().toUpperCase() === cat.trim().toUpperCase());
+      filterByCategory(cat, targetBtn);
     }
 
     function resetHome() {
       currentFilterTh = 'ALL';
       document.getElementById('selectedThText').innerText = 'ALL TH';
       const allBtn = document.querySelector('.cat-pill');
-      if (allBtn) filterByCategory('ALL', allBtn);
+      filterByCategory('ALL', allBtn);
     }
 
     function formatTime(dateStr) {
@@ -315,11 +314,11 @@
       let filtered = [...allBases];
 
       if (currentFilterTh !== 'ALL') {
-        filtered = filtered.filter(b => (b.th_level || '').trim().toUpperCase() === currentFilterTh.trim().toUpperCase());
+        filtered = filtered.filter(b => (b.th_level || '').toString().trim().toUpperCase() === currentFilterTh.trim().toUpperCase());
       }
 
       if (currentFilterCat !== 'ALL') {
-        filtered = filtered.filter(b => (b.base_type || '').trim().toUpperCase() === currentFilterCat.trim().toUpperCase());
+        filtered = filtered.filter(b => (b.base_type || '').toString().trim().toUpperCase() === currentFilterCat.trim().toUpperCase());
       }
 
       if (currentSort === 'NEW') {
@@ -337,7 +336,6 @@
         <div class="bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden shadow-lg flex flex-col">
           <div class="relative bg-neutral-950">
             <img src="${b.image_url}" alt="${b.title || 'COC Base'}" class="w-full h-56 object-cover" onerror="this.src='https://placehold.co/600x400/1e293b/94a3b8?text=COC+Base'">
-            
             <div class="absolute top-2.5 left-2.5 flex items-center gap-1.5">
               <span class="bg-amber-500 text-neutral-950 text-[11px] font-black px-2 py-0.5 rounded-md shadow">${b.th_level || 'TH'}</span>
               <span class="bg-neutral-900/90 text-amber-400 border border-neutral-700 text-[10px] font-bold px-2 py-0.5 rounded-md backdrop-blur-sm">${b.base_type || 'WAR'}</span>
@@ -346,7 +344,6 @@
 
           <div class="p-3">
             <h3 class="font-bold text-sm mb-2.5 line-clamp-1 text-slate-100">${b.title || 'Untitled Base'}</h3>
-            
             <div class="flex items-center justify-between text-neutral-400 text-xs border-t border-neutral-800/80 pt-2.5">
               <div class="flex items-center gap-4">
                 <span class="flex items-center gap-1 font-semibold text-slate-300">
@@ -395,4 +392,10 @@
 
     async function fetchBases() {
       try {
-        const { data, error } = await db.from('bases').sele
+        const { data, error } = await db.from('bases').select('*');
+        if (error) throw error;
+        allBases = data || [];
+        renderBases();
+      } catch (err) {
+        document.getElementById('basesGrid').innerHTML = `
+          <div class="text-rose-4
