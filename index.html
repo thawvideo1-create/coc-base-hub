@@ -27,14 +27,14 @@
           English
         </button>
 
-        <!-- Sort Native Select -->
+        <!-- Sort Select -->
         <select id="sortSelect" onchange="changeSort(this.value)" class="bg-neutral-800 text-amber-400 text-xs font-bold px-2 py-1 rounded-lg border border-neutral-700 focus:outline-none cursor-pointer">
           <option value="NEW">⚡ NEW</option>
           <option value="POPULAR">🔥 POPULAR</option>
           <option value="ALL">📦 ALL</option>
         </select>
 
-        <!-- TH Select Dropdown -->
+        <!-- TH Select Dropdown (TH 10 မှ TH 18 အထိသာ) -->
         <select id="thFilterSelect" onchange="changeTh(this.value)" class="bg-neutral-800 text-amber-400 text-xs font-bold px-2 py-1 rounded-lg border border-neutral-700 focus:outline-none cursor-pointer">
           <option value="ALL">ALL TH</option>
           <option value="TH 18">TH 18</option>
@@ -46,12 +46,6 @@
           <option value="TH 12">TH 12</option>
           <option value="TH 11">TH 11</option>
           <option value="TH 10">TH 10</option>
-          <option value="TH 9">TH 9</option>
-          <option value="TH 8">TH 8</option>
-          <option value="TH 7">TH 7</option>
-          <option value="TH 6">TH 6</option>
-          <option value="TH 5">TH 5</option>
-          <option value="TH 4">TH 4</option>
         </select>
       </div>
     </div>
@@ -104,6 +98,7 @@
         <div class="grid grid-cols-2 gap-2">
           <div>
             <label id="lblTh" class="text-xs text-neutral-400 block mb-1">Town Hall</label>
+            <!-- Upload Modal TH Select (TH 10 မှ TH 18 အထိသာ) -->
             <select id="thLevel" class="w-full bg-neutral-950 border border-neutral-800 rounded-lg p-2 text-xs text-white">
               <option value="TH 18">TH 18</option>
               <option value="TH 17">TH 17</option>
@@ -114,12 +109,6 @@
               <option value="TH 12">TH 12</option>
               <option value="TH 11">TH 11</option>
               <option value="TH 10">TH 10</option>
-              <option value="TH 9">TH 9</option>
-              <option value="TH 8">TH 8</option>
-              <option value="TH 7">TH 7</option>
-              <option value="TH 6">TH 6</option>
-              <option value="TH 5">TH 5</option>
-              <option value="TH 4">TH 4</option>
             </select>
           </div>
           <div>
@@ -423,7 +412,7 @@
         } catch (e) {
           document.getElementById('basesGrid').innerHTML =
             '<div class="text-rose-400 text-xs py-8 px-4 text-center border border-neutral-800 rounded-xl bg-neutral-900">' +
-              'ဒေတာဆာဗာမှ တုံ့ပြန်ချက်: <br><span class="text-neutral-400 text-[11px]">' + text + '</span>' +
+              'ဆာဗာမှ ဒေတာပို့ချက်: <br><span class="text-neutral-400 text-[11px]">' + text + '</span>' +
             '</div>';
         }
       })
@@ -446,4 +435,19 @@
     function handleUpload(e) {
       e.preventDefault();
       var t = dict[currentLang];
-      var btn = document.getElementById('
+      var btn = document.getElementById('submitBtn');
+      btn.innerText = t.uploading;
+      btn.disabled = true;
+
+      var file = document.getElementById('imageFile').files[0];
+      if (!file) {
+        alert("ဓာတ်ပုံ ရွေးချယ်ပေးပါ");
+        btn.innerText = t.submit;
+        btn.disabled = false;
+        return;
+      }
+
+      var fileExt = file.name.split('.').pop();
+      var fileName = Date.now() + '_' + Math.random().toString(36).substring(7) + '.' + fileExt;
+
+      fetch(PROXY_URL + '/storage/v1/object/base-im
