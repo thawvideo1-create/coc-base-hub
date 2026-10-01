@@ -1,9 +1,4 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!DOCTYPE html>
 <html lang="my">
 <head>
   <meta charset="UTF-8">
@@ -80,9 +75,12 @@
           <div>
             <label class="text-xs text-slate-400 block mb-1" data-i18n="labelBaseType">Base အမျိုးအစား</label>
             <select id="baseType" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-sm text-white">
-              <option value="War Base" data-i18n-opt="warBase">War Base</option>
-              <option value="Trophy Base" data-i18n-opt="trophyBase">Trophy Base</option>
-              <option value="Farming Base" data-i18n-opt="farmingBase">Farming Base</option>
+              <option value="Rank Base">Rank Base</option>
+              <option value="CWL">CWL</option>
+              <option value="War Base">War Base</option>
+              <option value="Hybrid">Hybrid</option>
+              <option value="Farming">Farming</option>
+              <option value="Funny">Funny</option>
             </select>
           </div>
         </div>
@@ -121,9 +119,6 @@
         labelTitle: "ခေါင်းစဉ်",
         labelTownHall: "Town Hall",
         labelBaseType: "Base အမျိုးအစား",
-        warBase: "War Base",
-        trophyBase: "Trophy Base",
-        farmingBase: "Farming Base",
         labelLink: "COC Layout Link",
         labelImage: "ဓာတ်ပုံ Link (Image URL)",
         cancelBtn: "ပိတ်မည်",
@@ -145,9 +140,6 @@
         labelTitle: "Layout Title",
         labelTownHall: "Town Hall Level",
         labelBaseType: "Base Category",
-        warBase: "War Base",
-        trophyBase: "Trophy Base",
-        farmingBase: "Farming Base",
         labelLink: "COC In-Game Link",
         labelImage: "Screenshot Image URL",
         cancelBtn: "Cancel",
@@ -177,11 +169,6 @@
 
       document.getElementById('baseTitle').placeholder = t.placeholderTitle;
 
-      document.querySelectorAll('[data-i18n-opt]').forEach(el => {
-        const key = el.getAttribute('data-i18n-opt');
-        if (t[key]) el.innerText = t[key];
-      });
-
       fetchBases();
     }
 
@@ -207,7 +194,7 @@
           <div class="relative">
             <img src="${b.image_url}" alt="${b.title}" class="w-full h-48 object-cover" onerror="this.src='https://placehold.co/600x400/1e293b/94a3b8?text=Base+Photo'">
             <span class="absolute top-2 left-2 bg-amber-500 text-slate-950 text-xs font-bold px-2 py-1 rounded">${b.th_level}</span>
-            <span class="absolute top-2 right-2 bg-slate-900/80 text-xs px-2 py-1 rounded backdrop-blur-sm">${b.base_type}</span>
+            <span class="absolute top-2 right-2 bg-slate-900/80 text-xs px-2 py-1 rounded backdrop-blur-sm border border-slate-700">${b.base_type}</span>
           </div>
           <div class="p-4 flex-1 flex flex-col justify-between">
             <h3 class="font-bold text-lg mb-3 line-clamp-1">${b.title}</h3>
