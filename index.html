@@ -61,6 +61,7 @@
     .modal-btns { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
     .btn-cancel { background: #262626; color: #fff; border: none; padding: 8px 14px; border-radius: 8px; font-size: 12px; cursor: pointer; }
     .btn-submit { background: #f59e0b; color: #000; border: none; padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; }
+    .no-bases-hint { text-align: center; color: #94a3b8; font-size: 13px; padding: 30px 0; }
   </style>
 </head>
 <body>
@@ -68,7 +69,7 @@
   <!-- Header -->
   <header>
     <div class="header-top">
-      <div class="logo" id="homeLogo">🛡️ ClashBase</div>
+      <div class="logo" id="homeLogo"> COCBase</div>
       <div class="controls">
         <button type="button" class="btn-lang" id="langToggle">English</button>
         <select class="select-box" id="sortFilter">
@@ -90,7 +91,7 @@
       </div>
     </div>
 
-    <!-- Category Filter Buttons -->
+    <!-- Category Tabs -->
     <div class="cat-bar" id="catBar">
       <button type="button" class="cat-btn active" data-cat="ALL">All</button>
       <button type="button" class="cat-btn" data-cat="WAR">War</button>
@@ -108,83 +109,7 @@
   </div>
 
   <!-- Feed Container -->
-  <main class="feed" id="feedContainer">
-    <!-- Base 1 -->
-    <div class="card" data-th="TH 18" data-cat="WAR" data-copies="160">
-      <div class="img-wrap">
-        <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&auto=format&fit=crop&q=80" alt="Base">
-        <span class="badge-th">TH 18</span>
-        <span class="badge-cat">WAR</span>
-      </div>
-      <div class="card-body">
-        <div class="card-title">TH 18 Anti-3 Star Legend Base</div>
-        <div class="card-footer">
-          <div class="meta-info">
-            <span>📋 <b class="copy-cnt">160</b></span>
-            <span class="time-txt">1h က</span>
-          </div>
-          <button type="button" class="btn-copy" data-link="https://link.clashofclans.com/en?action=OpenLayout&id=TH18">📥 <span class="copy-txt">Copy Layout</span></button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Base 2 -->
-    <div class="card" data-th="TH 17" data-cat="CWL" data-copies="95">
-      <div class="img-wrap">
-        <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&auto=format&fit=crop&q=80" alt="Base">
-        <span class="badge-th">TH 17</span>
-        <span class="badge-cat">CWL</span>
-      </div>
-      <div class="card-body">
-        <div class="card-title">TH 17 Defensive CWL Hard Base</div>
-        <div class="card-footer">
-          <div class="meta-info">
-            <span>📋 <b class="copy-cnt">95</b></span>
-            <span class="time-txt">3h က</span>
-          </div>
-          <button type="button" class="btn-copy" data-link="https://link.clashofclans.com/en?action=OpenLayout&id=TH17">📥 <span class="copy-txt">Copy Layout</span></button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Base 3 -->
-    <div class="card" data-th="TH 16" data-cat="RANK" data-copies="245">
-      <div class="img-wrap">
-        <img src="https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=800&auto=format&fit=crop&q=80" alt="Base">
-        <span class="badge-th">TH 16</span>
-        <span class="badge-cat">RANK</span>
-      </div>
-      <div class="card-body">
-        <div class="card-title">TH 16 Trophy Push & Legend Base</div>
-        <div class="card-footer">
-          <div class="meta-info">
-            <span>📋 <b class="copy-cnt">245</b></span>
-            <span class="time-txt">5h က</span>
-          </div>
-          <button type="button" class="btn-copy" data-link="https://link.clashofclans.com/en?action=OpenLayout&id=TH16">📥 <span class="copy-txt">Copy Layout</span></button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Base 4 -->
-    <div class="card" data-th="TH 15" data-cat="FARMING" data-copies="70">
-      <div class="img-wrap">
-        <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=800&auto=format&fit=crop&q=80" alt="Base">
-        <span class="badge-th">TH 15</span>
-        <span class="badge-cat">FARMING</span>
-      </div>
-      <div class="card-body">
-        <div class="card-title">TH 15 Dark Elixir Farming Base</div>
-        <div class="card-footer">
-          <div class="meta-info">
-            <span>📋 <b class="copy-cnt">70</b></span>
-            <span class="time-txt">8h က</span>
-          </div>
-          <button type="button" class="btn-copy" data-link="https://link.clashofclans.com/en?action=OpenLayout&id=TH15">📥 <span class="copy-txt">Copy Layout</span></button>
-        </div>
-      </div>
-    </div>
-  </main>
+  <main class="feed" id="feedContainer"></main>
 
   <!-- Floating Add Button -->
   <button type="button" class="fab" id="openAddModal">+</button>
@@ -229,8 +154,8 @@
           </div>
         </div>
         <div class="form-group">
-          <label id="lblLink">COC Layout Link</label>
-          <input type="url" id="newLink" required placeholder="https://link.clashofclans.com/..." class="form-input">
+          <label id="lblLink">COC Layout Link (ဂိမ်းထဲမှ Share as link)</label>
+          <input type="url" id="newLink" required placeholder="https://link.clashofclans.com/en?action=OpenLayout&id=..." class="form-input">
         </div>
         <div class="form-group">
           <label id="lblImg">Base ဓာတ်ပုံ (Gallery မှ ရွေးပါ)</label>
@@ -245,55 +170,125 @@
   </div>
 
   <script>
-    // Independent Pure JavaScript Engine
     var activeTh = 'ALL';
     var activeCat = 'ALL';
     var isBurmese = true;
 
-    // Filter Logic
-    function updateFeed() {
-      var cards = document.querySelectorAll('.card');
-      for (var i = 0; i < cards.length; i++) {
-        var c = cards[i];
-        var th = c.getAttribute('data-th');
-        var cat = c.getAttribute('data-cat');
-        var showTh = (activeTh === 'ALL' || activeTh === th);
-        var showCat = (activeCat === 'ALL' || activeCat === cat);
-        c.style.display = (showTh && showCat) ? 'flex' : 'none';
-      }
+    // LocalStorage မှ Base များကို အမြဲတမ်း သိမ်းဆည်းထားခြင်း
+    function getStoredBases() {
+      try {
+        var data = localStorage.getItem('stored_coc_bases');
+        if (data) return JSON.parse(data);
+      } catch(e) {}
+      return [
+        {
+          id: 1,
+          title: "TH 18 Anti-3 Star Legend Base",
+          th: "TH 18",
+          cat: "WAR",
+          copies: 160,
+          link: "https://link.clashofclans.com/en",
+          img: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&auto=format&fit=crop&q=80",
+          time: "1h က"
+        },
+        {
+          id: 2,
+          title: "TH 17 Defensive CWL Hard Base",
+          th: "TH 17",
+          cat: "CWL",
+          copies: 95,
+          link: "https://link.clashofclans.com/en",
+          img: "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&auto=format&fit=crop&q=80",
+          time: "3h က"
+        },
+        {
+          id: 3,
+          title: "TH 16 Trophy Push & Legend Base",
+          th: "TH 16",
+          cat: "RANK",
+          copies: 245,
+          link: "https://link.clashofclans.com/en",
+          img: "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=800&auto=format&fit=crop&q=80",
+          time: "5h က"
+        },
+        {
+          id: 4,
+          title: "TH 15 Dark Elixir Farming Base",
+          th: "TH 15",
+          cat: "FARMING",
+          copies: 70,
+          link: "https://link.clashofclans.com/en",
+          img: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=800&auto=format&fit=crop&q=80",
+          time: "8h က"
+        }
+      ];
     }
 
-    // Category Tabs Event
+    var allBases = getStoredBases();
+
+    function renderFeed() {
+      var container = document.getElementById('feedContainer');
+      var sortMode = document.getElementById('sortFilter').value;
+
+      var filtered = allBases.filter(function(b) {
+        var matchTh = (activeTh === 'ALL' || b.th === activeTh);
+        var matchCat = (activeCat === 'ALL' || b.cat === activeCat);
+        return matchTh && matchCat;
+      });
+
+      if (sortMode === 'POPULAR') {
+        filtered.sort(function(a, b) { return b.copies - a.copies; });
+      }
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<div class="no-bases-hint">' + (isBurmese ? 'ရွေးချယ်ထားသော Base မရှိသေးပါ။' : 'No bases found.') + '</div>';
+        return;
+      }
+
+      var html = '';
+      for (var i = 0; i < filtered.length; i++) {
+        var b = filtered[i];
+        html += '<div class="card">' +
+          '<div class="img-wrap">' +
+            '<img src="' + b.img + '" alt="Base">' +
+            '<span class="badge-th">' + b.th + '</span>' +
+            '<span class="badge-cat">' + b.cat + '</span>' +
+          '</div>' +
+          '<div class="card-body">' +
+            '<div class="card-title">' + b.title + '</div>' +
+            '<div class="card-footer">' +
+              '<div class="meta-info">' +
+                '<span>📋 <b class="copy-cnt">' + b.copies + '</b></span>' +
+                '<span class="time-txt">' + b.time + '</span>' +
+              '</div>' +
+              '<button type="button" class="btn-copy" onclick="handleCopyClick(' + b.id + ', \'' + encodeURIComponent(b.link) + '\', this)">📥 <span class="copy-txt">Copy Layout</span></button>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      }
+      container.innerHTML = html;
+    }
+
+    // Category Tabs
     var catButtons = document.querySelectorAll('.cat-btn');
     for (var i = 0; i < catButtons.length; i++) {
       catButtons[i].onclick = function() {
         activeCat = this.getAttribute('data-cat');
-        for (var j = 0; j < catButtons.length; j++) {
-          catButtons[j].classList.remove('active');
-        }
+        for (var j = 0; j < catButtons.length; j++) catButtons[j].classList.remove('active');
         this.classList.add('active');
-        updateFeed();
+        renderFeed();
       };
     }
 
-    // TH Select Event
+    // TH Select
     document.getElementById('thFilter').onchange = function() {
       activeTh = this.value;
-      updateFeed();
+      renderFeed();
     };
 
-    // Sort Event
+    // Sort Select
     document.getElementById('sortFilter').onchange = function() {
-      var container = document.getElementById('feedContainer');
-      var cards = Array.prototype.slice.call(document.querySelectorAll('.card'));
-      if (this.value === 'POPULAR') {
-        cards.sort(function(a, b) {
-          return parseInt(b.getAttribute('data-copies') || 0) - parseInt(a.getAttribute('data-copies') || 0);
-        });
-      }
-      for (var i = 0; i < cards.length; i++) {
-        container.appendChild(cards[i]);
-      }
+      renderFeed();
     };
 
     // Home Reset
@@ -302,14 +297,12 @@
       activeCat = 'ALL';
       document.getElementById('thFilter').value = 'ALL';
       document.getElementById('sortFilter').value = 'NEW';
-      for (var i = 0; i < catButtons.length; i++) {
-        catButtons[i].classList.remove('active');
-      }
+      for (var i = 0; i < catButtons.length; i++) catButtons[i].classList.remove('active');
       catButtons[0].classList.add('active');
-      updateFeed();
+      renderFeed();
     };
 
-    // Language Toggle Event
+    // Language Toggle
     document.getElementById('langToggle').onclick = function() {
       isBurmese = !isBurmese;
       this.innerText = isBurmese ? "English" : "မြန်မာစာ";
@@ -318,67 +311,52 @@
       document.getElementById('lblTitle').innerText = isBurmese ? "ခေါင်းစဉ်" : "Base Title";
       document.getElementById('lblTh').innerText = isBurmese ? "Town Hall" : "Town Hall";
       document.getElementById('lblType').innerText = isBurmese ? "အမျိုးအစား" : "Category";
-      document.getElementById('lblLink').innerText = isBurmese ? "COC Layout Link" : "COC Link";
+      document.getElementById('lblLink').innerText = isBurmese ? "COC Layout Link (ဂိမ်းထဲမှ Share as link)" : "COC Layout Link";
       document.getElementById('lblImg').innerText = isBurmese ? "Base ဓာတ်ပုံ (Gallery မှ ရွေးပါ)" : "Base Screenshot";
       document.getElementById('cancelAddModal').innerText = isBurmese ? "ပိတ်မည်" : "Cancel";
       document.getElementById('submitAddModal').innerText = isBurmese ? "တင်မည်" : "Publish";
-
-      var times = document.querySelectorAll('.time-txt');
-      for (var i = 0; i < times.length; i++) {
-        if (isBurmese) {
-          times[i].innerText = times[i].innerText.replace('ago', 'က');
-        } else {
-          times[i].innerText = times[i].innerText.replace('က', 'ago');
-        }
-      }
+      renderFeed();
     };
 
-    // Copy Layout & Launch COC Game App
-    document.getElementById('feedContainer').onclick = function(e) {
-      var btn = e.target.closest('.btn-copy');
-      if (!btn) return;
-
-      var link = btn.getAttribute('data-link');
-      var card = btn.closest('.card');
-      var cnt = card.querySelector('.copy-cnt');
-      if (cnt) {
-        var newCnt = parseInt(cnt.innerText) + 1;
-        cnt.innerText = newCnt;
-        card.setAttribute('data-copies', newCnt);
+    // Copy Layout နှိပ်သည့်အခါ
+    window.handleCopyClick = function(id, encodedLink, btn) {
+      var link = decodeURIComponent(encodedLink);
+      
+      // Update Copy Count in Memory & Storage
+      for (var i = 0; i < allBases.length; i++) {
+        if (allBases[i].id === id) {
+          allBases[i].copies += 1;
+          break;
+        }
       }
+      localStorage.setItem('stored_coc_bases', JSON.stringify(allBases));
 
       var txtSpan = btn.querySelector('.copy-txt');
-      var origText = txtSpan.innerText;
       txtSpan.innerText = "Copied!";
       btn.classList.add('done');
 
-      // Clipboard
       if (navigator.clipboard) {
         navigator.clipboard.writeText(link).catch(function() {});
       }
 
       setTimeout(function() {
-        txtSpan.innerText = origText;
         btn.classList.remove('done');
-        // COC Game App တိုက်ရိုက်ပွင့်ရန်
+        txtSpan.innerText = "Copy Layout";
+        // ဂိမ်းဆီသို့ တိုက်ရိုက် ခုန်ကူးဖွင့်ခြင်း
         if (link) {
           window.location.href = link;
         }
       }, 400);
     };
 
-    // Modal Popup Controls
+    // Modal
     var modal = document.getElementById('modalWindow');
-    document.getElementById('openAddModal').onclick = function() {
-      modal.classList.add('show');
-    };
-    function closeModal() {
-      modal.classList.remove('show');
-    }
+    document.getElementById('openAddModal').onclick = function() { modal.classList.add('show'); };
+    function closeModal() { modal.classList.remove('show'); }
     document.getElementById('closeAddModal').onclick = closeModal;
     document.getElementById('cancelAddModal').onclick = closeModal;
 
-    // Add Base Form Submit
+    // Base အသစ်တင်ပြီး LocalStorage ထဲ အပြီးတိုင်သိမ်းဆည်းခြင်း (Refresh လုပ်လည်း မပျောက်ပါ)
     document.getElementById('newPostForm').onsubmit = function(e) {
       e.preventDefault();
       var title = document.getElementById('newTitle').value;
@@ -391,39 +369,31 @@
 
       var reader = new FileReader();
       reader.onload = function(evt) {
-        var card = document.createElement('div');
-        card.className = "card";
-        card.setAttribute('data-th', th);
-        card.setAttribute('data-cat', cat);
-        card.setAttribute('data-copies', '0');
+        var newBaseItem = {
+          id: Date.now(),
+          title: title,
+          th: th,
+          cat: cat,
+          copies: 0,
+          link: link,
+          img: evt.target.result,
+          time: isBurmese ? "ခုနက" : "Just now"
+        };
 
-        card.innerHTML = 
-          '<div class="img-wrap">' +
-            '<img src="' + evt.target.result + '" alt="Base">' +
-            '<span class="badge-th">' + th + '</span>' +
-            '<span class="badge-cat">' + cat + '</span>' +
-          '</div>' +
-          '<div class="card-body">' +
-            '<div class="card-title">' + title + '</div>' +
-            '<div class="card-footer">' +
-              '<div class="meta-info">' +
-                '<span>📋 <b class="copy-cnt">0</b></span>' +
-                '<span class="time-txt">' + (isBurmese ? 'ခုနက' : 'Just now') + '</span>' +
-              '</div>' +
-              '<button type="button" class="btn-copy" data-link="' + link + '">📥 <span class="copy-txt">Copy Layout</span></button>' +
-            '</div>' +
-          '</div>';
+        allBases.unshift(newBaseItem);
+        // Refresh လုပ်တိုင်း မပျောက်စေရန် LocalStorage တွင် သိမ်းသည်
+        localStorage.setItem('stored_coc_bases', JSON.stringify(allBases));
 
-        var feed = document.getElementById('feedContainer');
-        feed.insertBefore(card, feed.firstChild);
-
-        alert(isBurmese ? "Base တင်ခြင်း အောင်မြင်ပါသည်!" : "Base shared successfully!");
+        alert(isBurmese ? "Base တင်ခြင်း အောင်မြင်ပါသည်! (Refresh လုပ်လည်း မပျောက်တော့ပါ)" : "Base saved successfully!");
         document.getElementById('newPostForm').reset();
         closeModal();
-        updateFeed();
+        renderFeed();
       };
       reader.readAsDataURL(file);
     };
+
+    // Start Initial Render
+    renderFeed();
   </script>
 </body>
-</htm
+</html>
