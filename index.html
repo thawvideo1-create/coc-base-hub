@@ -8,15 +8,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    /* Hide scrollbar for Chrome, Safari and Opera */
-    .no-scrollbar::-webkit-scrollbar {
-      display: none;
-    }
-    /* Hide scrollbar for IE, Edge and Firefox */
-    .no-scrollbar {
-      -ms-overflow-style: none;  /* IE and Edge */
-      scrollbar-width: none;  /* Firefox */
-    }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
 <body class="bg-neutral-950 text-slate-100 min-h-screen pb-24 select-none">
@@ -24,7 +17,7 @@
   <!-- Top Navigation Header -->
   <header class="sticky top-0 z-40 bg-neutral-900/95 backdrop-blur-md border-b border-neutral-800">
     <div class="max-w-md mx-auto px-4 py-2.5 flex justify-between items-center">
-      <div class="flex items-center gap-1.5">
+      <div class="flex items-center gap-1.5 cursor-pointer" onclick="resetHome()">
         <i class="fa-solid fa-shield-halved text-amber-500 text-xl"></i>
         <span class="font-extrabold text-lg tracking-wider bg-gradient-to-r from-amber-400 to-amber-600 bg-clip-text text-transparent">ClashBase</span>
       </div>
@@ -60,7 +53,7 @@
         <!-- TH Level Dropdown Filter -->
         <div class="relative">
           <button onclick="toggleThMenu()" class="flex items-center gap-1 bg-neutral-800 hover:bg-neutral-700 text-amber-400 px-2.5 py-1 rounded-lg border border-neutral-700 text-xs font-bold transition">
-            <span id="selectedThText">TH 18</span>
+            <span id="selectedThText">ALL TH</span>
             <i class="fa-solid fa-chevron-down text-[9px]"></i>
           </button>
           <div id="thDropdown" class="hidden absolute right-0 mt-2 w-36 bg-neutral-900 border border-neutral-800 rounded-xl shadow-2xl overflow-y-auto max-h-72 z-50 p-1">
@@ -186,7 +179,7 @@
     let allBases = [];
     let currentFilterTh = 'ALL';
     let currentFilterCat = 'ALL';
-    let currentSort = 'NEW'; // 'NEW', 'POPULAR', 'ALL'
+    let currentSort = 'NEW';
     let currentLang = localStorage.getItem('site_lang') || 'my';
 
     const translations = {
@@ -300,9 +293,10 @@
     }
 
     function formatTime(dateStr) {
+      if (!dateStr) return "Just now";
       const d = new Date(dateStr);
       const now = new Date();
-      const diffSec = Math.floor((now - d) / 1000);
+      const diffSec = Math.max(0, Math.floor((now - d) / 1000));
       const isMm = currentLang === 'my';
 
       if (diffSec < 60) return isMm ? "ခုနက" : "Just now";
@@ -332,9 +326,9 @@
 
       // Sort Filter (NEW / POPULAR / ALL)
       if (currentSort === 'NEW') {
-        filtered.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        filtered.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
       } else if (currentSort === 'POPULAR') {
-        filtered.sort((a, b) => (b.copy_count || 0) - (a.copy_count || 0));
+        filtered.sort((a, b) => (Number(b.copy_count) || 0) - (Number(a.copy_count) || 0));
       }
 
       if (filtered.length === 0) {
@@ -345,16 +339,16 @@
       grid.innerHTML = filtered.map(b => `
         <div class="bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden shadow-lg flex flex-col">
           <div class="relative bg-neutral-950">
-            <img src="${b.image_url}" alt="${b.title}" class="w-full h-56 object-cover" onerror="this.src='https://placehold.co/600x400/1e293b/94a3b8?text=COC+Base'">
+            <img src="${b.image_url}" alt="${b.title || 'COC Base'}" class="w-full h-56 object-cover" onerror="this.src='https://placehold.co/600x400/1e293b/94a3b8?text=COC+Base'">
             
             <div class="absolute top-2.5 left-2.5 flex items-center gap-1.5">
-              <span class="bg-amber-500 text-neutral-950 text-[11px] font-black px-2 py-0.5 rounded-md shadow">${b.th_level}</span>
-              <span class="bg-neutral-900/90 text-amber-400 border border-neutral-700 text-[10px] font-bold px-2 py-0.5 rounded-md backdrop-blur-sm">${b.base_type}</span>
+              <span class="bg-amber-500 text-neutral-950 text-[11px] font-black px-2 py-0.5 rounded-md shadow">${b.th_level || 'TH'}</span>
+              <span class="bg-neutral-900/90 text-amber-400 border border-neutral-700 text-[10px] font-bold px-2 py-0.5 rounded-md backdrop-blur-sm">${b.base_type || 'WAR'}</span>
             </div>
           </div>
 
           <div class="p-3">
-            <h3 class="font-bold text-sm mb-2.5 line-clamp-1 text-slate-100">${b.title}</h3>
+            <h3 class="font-bold text-sm mb-2.5 line-clamp-1 text-slate-100">${b.title || 'Untitled Base'}</h3>
             
             <div class="flex items-center justify-between text-neutral-400 text-xs border-t border-neutral-800/80 pt-2.5">
               <div class="flex items-center gap-4">
@@ -386,11 +380,13 @@
 
       try {
         await db.rpc('increment_copy', { base_id: baseId });
-        const countSpan = document.getElementById(`count-${baseId}`);
-        if (countSpan) countSpan.innerText = parseInt(countSpan.innerText || 0) + 1;
       } catch (err) {
-        console.error(err);
+        // fallback directly if rpc not created
+        console.warn(err);
       }
+
+      const countSpan = document.getElementById(`count-${baseId}`);
+      if (countSpan) countSpan.innerText = parseInt(countSpan.innerText || 0) + 1;
 
       const originalText = btn.innerHTML;
       btn.innerHTML = `<i class="fa-solid fa-check"></i> ${translations[currentLang].copied}`;
@@ -399,4 +395,4 @@
       setTimeout(() => {
         btn.innerHTML = originalText;
         btn.classList.replace('bg-emerald-500', 'bg-amber-500');
-        window.open(link, '_blank');
+        if (link)
