@@ -89,8 +89,8 @@
           <input type="url" id="baseLink" required placeholder="https://link.clashofclans.com/..." class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-sm text-white focus:outline-none focus:border-amber-500">
         </div>
         <div>
-          <label class="text-xs text-slate-400 block mb-1" data-i18n="labelImage">ဓာတ်ပုံ Link (Image URL)</label>
-          <input type="url" id="imageUrl" required placeholder="https://..." class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-sm text-white focus:outline-none focus:border-amber-500">
+          <label class="text-xs text-slate-400 block mb-1" data-i18n="labelImage">Base ဓာတ်ပုံ (Gallery မှ ရွေးပါ)</label>
+          <input type="file" id="imageFile" accept="image/*" required class="w-full text-sm text-slate-400 file:mr-3 file:py-2 file:px-4 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-slate-700 file:text-amber-400 hover:file:bg-slate-600 cursor-pointer">
         </div>
         <div class="flex justify-end gap-2 pt-3">
           <button type="button" onclick="closeModal()" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded text-sm" data-i18n="cancelBtn">ပိတ်မည်</button>
@@ -101,12 +101,10 @@
   </div>
 
   <script>
-    // Supabase Configuration
     const SUPABASE_URL = "https://jzsodpshhihelemowzvn.supabase.co";
     const SUPABASE_ANON_KEY = "Sb_publishable_iZthfHzEZ5NwYnm3479NyQ_fUvcekcG";
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // Multilingual Translations Dictionary
     const translations = {
       my: {
         switchText: "English",
@@ -120,10 +118,10 @@
         labelTownHall: "Town Hall",
         labelBaseType: "Base အမျိုးအစား",
         labelLink: "COC Layout Link",
-        labelImage: "ဓာတ်ပုံ Link (Image URL)",
+        labelImage: "Base ဓာတ်ပုံ (Gallery မှ ရွေးပါ)",
         cancelBtn: "ပိတ်မည်",
         submitBtn: "တင်မည်",
-        uploading: "တင်နေပါသည်...",
+        uploading: "ပုံတင်နေပါသည်...",
         copyBtn: "Copy",
         errorPrefix: "အမှားဖြစ်သွားပါသည်: ",
         successMsg: "Base အောင်မြင်စွာ တင်ပြီးပါပြီ!",
@@ -141,7 +139,7 @@
         labelTownHall: "Town Hall Level",
         labelBaseType: "Base Category",
         labelLink: "COC In-Game Link",
-        labelImage: "Screenshot Image URL",
+        labelImage: "Upload Base Screenshot",
         cancelBtn: "Cancel",
         submitBtn: "Publish Base",
         uploading: "Uploading...",
@@ -168,7 +166,6 @@
       });
 
       document.getElementById('baseTitle').placeholder = t.placeholderTitle;
-
       fetchBases();
     }
 
@@ -216,28 +213,59 @@
       btn.innerText = t.uploading;
       btn.disabled = true;
 
-      const title = document.getElementById('baseTitle').value;
-      const th_level = document.getElementById('thLevel').value;
-      const base_type = document.getElementById('baseType').value;
-      const link = document.getElementById('baseLink').value;
-      const image_url = document.getElementById('imageUrl').value;
+      try {
+        const fileInput = document.getElementById('imageFile');
+        const file = fileInput.files[0];
+        
+        if (!file) throw new Error("ဓာတ်ပုံ ရွေးချယ်ပေးပါ");
 
-      const { error } = await db.from('bases').insert([{ title, th_level, base_type, link, image_url }]);
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
 
-      btn.innerText = t.submitBtn;
-      btn.disabled = false;
+        // 1. Upload file to Supabase Storage Bucket
+        const { data: uploadData, error: uploadError } = await db.storage
+          .from('base-images')
+          .upload(fileName, file);
 
-      if (error) {
-        alert(t.errorPrefix + error.message);
-      } else {
+        if (uploadError) throw uploadError;
+
+        // 2. Get Public URL
+        const { data: urlData } = db.storage
+          .from('base-images')
+          .getPublicUrl(fileName);
+
+        const imageUrl = urlData.publicUrl;
+
+        // 3. Insert record into bases table
+        const title = document.getElementById('baseTitle').value;
+        const th_level = document.getElementById('thLevel').value;
+        const base_type = document.getElementById('baseType').value;
+        const link = document.getElementById('baseLink').value;
+
+        const { error: dbError } = await db.from('bases').insert([{ 
+          title, 
+          th_level, 
+          base_type, 
+          link, 
+          image_url: imageUrl 
+        }]);
+
+        if (dbError) throw dbError;
+
         alert(t.successMsg);
         e.target.reset();
         closeModal();
         fetchBases();
+
+      } catch (err) {
+        alert(t.errorPrefix + err.message);
+      } finally {
+        btn.innerText = t.submitBtn;
+        btn.disabled = false;
       }
     }
 
-    // Initialize Language & Fetch Content
+    // Run initial language setup
     setLanguage(currentLang);
   </script>
 </body>
