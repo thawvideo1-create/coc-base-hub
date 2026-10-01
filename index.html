@@ -174,10 +174,14 @@
     var activeCat = 'ALL';
     var isBurmese = true;
 
+    // LocalStorage စနစ်တကျ ပြန်ဖတ်ခြင်း
     function getStoredBases() {
       try {
         var data = localStorage.getItem('stored_coc_bases');
-        if (data) return JSON.parse(data);
+        if (data) {
+          var parsed = JSON.parse(data);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        }
       } catch(e) {}
       return [];
     }
@@ -195,11 +199,11 @@
       });
 
       if (sortMode === 'POPULAR') {
-        filtered.sort(function(a, b) { return b.copies - a.copies; });
+        filtered.sort(function(a, b) { return (b.copies || 0) - (a.copies || 0); });
       }
 
       if (filtered.length === 0) {
-        container.innerHTML = '<div class="no-bases-hint">' + (isBurmese ? 'တင်ထားသော Base မရှိသေးပါ။ အောက်က + ခလုတ်ကိုနှိပ်၍ Base အသစ် တင်နိုင်ပါသည်ခင်ဗျာ။' : 'No bases yet. Click + button to upload a base.') + '</div>';
+        container.innerHTML = '<div class="no-bases-hint">' + (isBurmese ? 'တင်ထားသော Base မရှိသေးပါ။ အောက်က + ခလုတ်ကို နှိပ်၍ Base အသစ် တင်နိုင်ပါသည်ခင်ဗျာ။' : 'No bases yet. Click + button to upload a base.') + '</div>';
         return;
       }
 
@@ -216,10 +220,10 @@
             '<div class="card-title">' + b.title + '</div>' +
             '<div class="card-footer">' +
               '<div class="meta-info">' +
-                '<span>📋 <b class="copy-cnt">' + b.copies + '</b></span>' +
+                '<span>📋 <b class="copy-cnt">' + (b.copies || 0) + '</b></span>' +
                 '<span class="time-txt">' + b.time + '</span>' +
               '</div>' +
-              '<button type="button" class="btn-copy" onclick="executeCopyLayout(' + b.id + ', this)">📥 <span class="copy-txt">Copy Layout</span></button>' +
+              '<button type="button" class="btn-copy" data-id="' + b.id + '" data-link="' + b.link + '" onclick="handleCopyBtn(this)">📥 <span class="copy-txt">Copy Layout</span></button>' +
             '</div>' +
           '</div>' +
         '</div>';
@@ -227,7 +231,7 @@
       container.innerHTML = html;
     }
 
-    // Category Tabs
+    // Category Tabs Event
     var catButtons = document.querySelectorAll('.cat-btn');
     for (var i = 0; i < catButtons.length; i++) {
       catButtons[i].onclick = function() {
@@ -238,11 +242,21 @@
       };
     }
 
-    // Filters
-    document.getElementById('thFilter').onchange = function() { activeTh = this.value; renderFeed(); };
-    document.getElementById('sortFilter').onchange = function() { renderFeed(); };
+    // TH Select
+    document.getElementById('thFilter').onchange = function() {
+      activeTh = this.value;
+      renderFeed();
+    };
+
+    // Sort Select
+    document.getElementById('sortFilter').onchange = function() {
+      renderFeed();
+    };
+
+    // Home Logo Reset
     document.getElementById('homeLogo').onclick = function() {
-      activeTh = 'ALL'; activeCat = 'ALL';
+      activeTh = 'ALL';
+      activeCat = 'ALL';
       document.getElementById('thFilter').value = 'ALL';
       document.getElementById('sortFilter').value = 'NEW';
       for (var i = 0; i < catButtons.length; i++) catButtons[i].classList.remove('active');
@@ -250,7 +264,7 @@
       renderFeed();
     };
 
-    // Language Toggle
+    // Language Switcher
     document.getElementById('langToggle').onclick = function() {
       isBurmese = !isBurmese;
       this.innerText = isBurmese ? "English" : "မြန်မာစာ";
@@ -266,46 +280,87 @@
       renderFeed();
     };
 
-    // Copy Layout တိုက်ရိုက်လုပ်ဆောင်ချက် (Link ပုံစံ လုံးဝ မပျက်စေဘဲ ကူးယူခြင်း)
-    window.executeCopyLayout = function(id, btn) {
-      var targetBase = null;
+    // Copy Layout နှိပ်သည့်အခါ Clash of Clans ဂိမ်းထဲ တိုက်ရိုက် ခုန်ကူးဖွင့်ခြင်း
+    window.handleCopyBtn = function(btn) {
+      var link = btn.getAttribute('data-link');
+      var id = btn.getAttribute('data-id');
+      if (!link) return;
+
+      var cleanLink = link.trim();
+
+      // Count တိုးခြင်း
       for (var i = 0; i < allBases.length; i++) {
-        if (allBases[i].id === id) {
-          targetBase = allBases[i];
-          targetBase.copies += 1;
+        if (String(allBases[i].id) === String(id)) {
+          allBases[i].copies = (allBases[i].copies || 0) + 1;
           break;
         }
       }
-      localStorage.setItem('stored_coc_bases', JSON.stringify(allBases));
+      try {
+        localStorage.setItem('stored_coc_bases', JSON.stringify(allBases));
+      } catch(e) {}
 
-      if (!targetBase || !targetBase.link) return;
-      var cleanLink = targetBase.link.trim();
+      var card = btn.closest('.card');
+      if (card) {
+        var cnt = card.querySelector('.copy-cnt');
+        if (cnt) cnt.innerText = parseInt(cnt.innerText || 0) + 1;
+      }
 
-      // Clipboard ထဲ တိကျစွာ ထည့်သွင်းခြင်း
+      // Clipboard ကူးယူခြင်း
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(cleanLink).catch(function() {});
       }
 
       var txtSpan = btn.querySelector('.copy-txt');
-      txtSpan.innerText = "Copied!";
+      if (txtSpan) txtSpan.innerText = "Copied!";
       btn.classList.add('done');
 
+      // COC ဂိမ်းထဲသို့ တိုက်ရိုက် ရောက်ရှိစေခြင်း
+      window.location.href = cleanLink;
+
       setTimeout(function() {
-        txtSpan.innerText = "Copy Layout";
         btn.classList.remove('done');
-        // COC Link သို့ သန့်ရှင်းစွာ ခုန်ကူးစေခြင်း
-        window.location.href = cleanLink;
-      }, 300);
+        if (txtSpan) txtSpan.innerText = "Copy Layout";
+      }, 2000);
     };
 
-    // Modal
+    // Modal Popup Controls
     var modal = document.getElementById('modalWindow');
     document.getElementById('openAddModal').onclick = function() { modal.classList.add('show'); };
     function closeModal() { modal.classList.remove('show'); }
     document.getElementById('closeAddModal').onclick = closeModal;
     document.getElementById('cancelAddModal').onclick = closeModal;
 
-    // Base အသစ်တင်ခြင်း (Link ကို trim လုပ်၍ သန့်ရှင်းစွာ သိမ်းဆည်းခြင်း)
+    // ဓာတ်ပုံအရွယ်အစားကို ပေါ့ပါးသွားအောင် အလိုအလျောက်ချုံ့ပေးသည့် function (Canvas Compression)
+    function compressImage(file, callback) {
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var img = new Image();
+        img.onload = function() {
+          var canvas = document.createElement('canvas');
+          var maxWidth = 640;
+          var width = img.width;
+          var height = img.height;
+
+          if (width > maxWidth) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          var ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // JPEG 0.65 ဖြင့် ချုံ့ခြင်းဖြင့် Memory မပြည့်တော့ပါ
+          var dataUrl = canvas.toDataURL('image/jpeg', 0.65);
+          callback(dataUrl);
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Base အသစ်တင်သည့် Form Submit
     document.getElementById('newPostForm').onsubmit = function(e) {
       e.preventDefault();
       var title = document.getElementById('newTitle').value.trim();
@@ -313,11 +368,17 @@
       var cat = document.getElementById('newCat').value;
       var link = document.getElementById('newLink').value.trim();
       var file = document.getElementById('newFile').files[0];
+      var submitBtn = document.getElementById('submitAddModal');
 
-      if (!file) return;
+      if (!file) {
+        alert("ဓာတ်ပုံ ရွေးချယ်ပေးပါ");
+        return;
+      }
 
-      var reader = new FileReader();
-      reader.onload = function(evt) {
+      submitBtn.innerText = isBurmese ? "တင်နေပါသည်..." : "Uploading...";
+      submitBtn.disabled = true;
+
+      compressImage(file, function(compressedDataUrl) {
         var newBaseItem = {
           id: Date.now(),
           title: title,
@@ -325,21 +386,28 @@
           cat: cat,
           copies: 0,
           link: link,
-          img: evt.target.result,
+          img: compressedDataUrl,
           time: isBurmese ? "ခုနက" : "Just now"
         };
 
         allBases.unshift(newBaseItem);
-        localStorage.setItem('stored_coc_bases', JSON.stringify(allBases));
+
+        try {
+          localStorage.setItem('stored_coc_bases', JSON.stringify(allBases));
+        } catch(err) {
+          console.warn("Storage full", err);
+        }
 
         alert(isBurmese ? "Base တင်ခြင်း အောင်မြင်ပါသည်!" : "Base uploaded successfully!");
         document.getElementById('newPostForm').reset();
+        submitBtn.innerText = isBurmese ? "တင်မည်" : "Publish";
+        submitBtn.disabled = false;
         closeModal();
         renderFeed();
-      };
-      reader.readAsDataURL(file);
+      });
     };
 
+    // စတင်ချိန် Feed ဆွဲတင်ခြင်း
     renderFeed();
   </script>
 </body>
