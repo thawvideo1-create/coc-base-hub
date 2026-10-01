@@ -11,7 +11,7 @@
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
-<body class="bg-neutral-950 text-slate-100 min-h-screen pb-16 select-none">
+<body class="bg-neutral-950 text-slate-100 min-h-screen pb-20 select-none">
 
   <!-- Header -->
   <header class="sticky top-0 z-40 bg-neutral-900/95 backdrop-blur-md border-b border-neutral-800">
@@ -72,7 +72,7 @@
   <!-- Feed Container -->
   <main class="max-w-md mx-auto px-3 py-3">
     <div id="basesGrid" class="space-y-4">
-      <div id="loadingStatus" class="text-slate-400 text-xs py-12 text-center">ဒေတာဆွဲတင်နေပါသည်...</div>
+      <!-- JavaScript ဖြင့် Base များ ချက်ချင်း တက်လာပါမည် -->
     </div>
   </main>
 
@@ -82,23 +82,23 @@
   </button>
 
   <!-- Upload Modal -->
-  <div id="uploadModal" class="fixed inset-0 bg-black/80 flex items-center justify-center p-4 hidden z-50">
+  <div id="uploadModal" class="fixed inset-0 bg-black/85 flex items-center justify-center p-4 z-50" style="display: none;">
     <div class="bg-neutral-900 border border-neutral-800 rounded-2xl max-w-md w-full p-5 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center mb-3">
-        <h2 id="modalTitleText" class="text-base font-bold">Base အသစ်တင်ရန်</h2>
-        <button type="button" onclick="closeModal()" class="text-neutral-400 hover:text-white p-1 cursor-pointer"><i class="fa-solid fa-xmark text-lg"></i></button>
+        <h2 id="modalTitleText" class="text-base font-bold text-amber-400">Base အသစ်တင်ရန်</h2>
+        <button type="button" onclick="closeModal()" class="text-neutral-400 hover:text-white p-2 text-xl font-bold cursor-pointer">&times;</button>
       </div>
 
       <form onsubmit="handleUpload(event)" class="space-y-3">
         <div>
           <label id="lblTitle" class="text-xs text-neutral-400 block mb-1">ခေါင်းစဉ်</label>
-          <input type="text" id="baseTitle" required placeholder="ဥပမာ - Anti-2 Star CWL Base" class="w-full bg-neutral-950 border border-neutral-800 rounded-lg p-2 text-xs text-white focus:outline-none focus:border-amber-500">
+          <input type="text" id="baseTitle" required placeholder="ဥပမာ - Anti-3 Star CWL Base" class="w-full bg-neutral-950 border border-neutral-800 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-amber-500">
         </div>
 
         <div class="grid grid-cols-2 gap-2">
           <div>
             <label id="lblTh" class="text-xs text-neutral-400 block mb-1">Town Hall</label>
-            <select id="thLevel" class="w-full bg-neutral-950 border border-neutral-800 rounded-lg p-2 text-xs text-white">
+            <select id="thLevel" class="w-full bg-neutral-950 border border-neutral-800 rounded-lg p-2.5 text-xs text-white">
               <option value="TH 18">TH 18</option>
               <option value="TH 17">TH 17</option>
               <option value="TH 16">TH 16</option>
@@ -112,7 +112,7 @@
           </div>
           <div>
             <label id="lblType" class="text-xs text-neutral-400 block mb-1">အမျိုးအစား</label>
-            <select id="baseType" class="w-full bg-neutral-950 border border-neutral-800 rounded-lg p-2 text-xs text-white font-medium">
+            <select id="baseType" class="w-full bg-neutral-950 border border-neutral-800 rounded-lg p-2.5 text-xs text-white font-medium">
               <option value="WAR">WAR</option>
               <option value="RANK">RANK</option>
               <option value="CWL">CWL</option>
@@ -125,17 +125,17 @@
 
         <div>
           <label id="lblLink" class="text-xs text-neutral-400 block mb-1">COC Layout Link</label>
-          <input type="url" id="baseLink" required placeholder="https://link.clashofclans.com/..." class="w-full bg-neutral-950 border border-neutral-800 rounded-lg p-2 text-xs text-white focus:outline-none focus:border-amber-500">
+          <input type="url" id="baseLink" required placeholder="https://link.clashofclans.com/..." class="w-full bg-neutral-950 border border-neutral-800 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-amber-500">
         </div>
 
         <div>
           <label id="lblImage" class="text-xs text-neutral-400 block mb-1">Base ဓာတ်ပုံ (Gallery မှ ရွေးပါ)</label>
-          <input type="file" id="imageFile" accept="image/*" required class="w-full text-xs text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-neutral-800 file:text-amber-400 hover:file:bg-neutral-700 cursor-pointer">
+          <input type="file" id="imageFile" accept="image/*" required class="w-full text-xs text-slate-400 file:mr-2 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-neutral-800 file:text-amber-400 hover:file:bg-neutral-700 cursor-pointer">
         </div>
 
-        <div class="flex justify-end gap-2 pt-2">
-          <button type="button" onclick="closeModal()" id="btnCancel" class="px-3 py-1.5 bg-neutral-800 hover:bg-neutral-700 rounded-lg text-xs cursor-pointer">ပိတ်မည်</button>
-          <button type="submit" id="submitBtn" class="px-4 py-1.5 bg-amber-500 hover:bg-amber-600 font-bold text-neutral-950 rounded-lg text-xs cursor-pointer">တင်မည်</button>
+        <div class="flex justify-end gap-2 pt-3">
+          <button type="button" onclick="closeModal()" id="btnCancel" class="px-4 py-2 bg-neutral-800 hover:bg-neutral-700 rounded-lg text-xs cursor-pointer">ပိတ်မည်</button>
+          <button type="submit" id="submitBtn" class="px-5 py-2 bg-amber-500 hover:bg-amber-600 font-bold text-neutral-950 rounded-lg text-xs cursor-pointer">တင်မည်</button>
         </div>
       </form>
     </div>
@@ -145,22 +145,79 @@
     var PROXY_URL = "https://orange-sun-6c0d.thawzinlatt-tt.workers.dev";
     var API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp6c29kcHNoaGloZWxlbW93enZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA4MjkwNDQsImV4cCI6MjEwNjQwNTA0NH0.x-gP_4a4rcKAjAhNgtegDlq8XD542Y3ufH54J6FVWlo";
 
-    var allBases = [];
+    // အဆင်သင့် ပါဝင်ပြီးသား Base များ (အင်တာနက် မစောင့်ဘဲ ချက်ချင်း ပေါ်စေရန်)
+    var initialBases = [
+      {
+        id: 101,
+        title: "TH 18 Anti-3 Star Legend Base",
+        th_level: "TH 18",
+        base_type: "WAR",
+        link: "https://link.clashofclans.com/en",
+        image_url: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&auto=format&fit=crop&q=80",
+        copy_count: 142,
+        created_at: new Date(Date.now() - 3600000).toISOString()
+      },
+      {
+        id: 102,
+        title: "TH 17 CWL Defensive Hard Base",
+        th_level: "TH 17",
+        base_type: "CWL",
+        link: "https://link.clashofclans.com/en",
+        image_url: "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&auto=format&fit=crop&q=80",
+        copy_count: 98,
+        created_at: new Date(Date.now() - 7200000).toISOString()
+      },
+      {
+        id: 103,
+        title: "TH 16 Trophy Push & Legend Base",
+        th_level: "TH 16",
+        base_type: "RANK",
+        link: "https://link.clashofclans.com/en",
+        image_url: "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=800&auto=format&fit=crop&q=80",
+        copy_count: 215,
+        created_at: new Date(Date.now() - 14400000).toISOString()
+      },
+      {
+        id: 104,
+        title: "TH 15 Farming & Loot Protection Base",
+        th_level: "TH 15",
+        base_type: "FARMING",
+        link: "https://link.clashofclans.com/en",
+        image_url: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=800&auto=format&fit=crop&q=80",
+        copy_count: 76,
+        created_at: new Date(Date.now() - 28800000).toISOString()
+      },
+      {
+        id: 105,
+        title: "TH 14 Funny Art Layout Base",
+        th_level: "TH 14",
+        base_type: "FUNNY",
+        link: "https://link.clashofclans.com/en",
+        image_url: "https://images.unsplash.com/photo-1579373903781-fd5c0c30c4cd?w=800&auto=format&fit=crop&q=80",
+        copy_count: 310,
+        created_at: new Date(Date.now() - 86400000).toISOString()
+      }
+    ];
+
+    var allBases = initialBases.slice();
     var currentFilterTh = 'ALL';
     var currentFilterCat = 'ALL';
     var currentSort = 'NEW';
     var currentLang = 'my';
 
     try {
-      var savedLang = localStorage.getItem('site_lang');
-      if (savedLang) currentLang = savedLang;
+      var saved = localStorage.getItem('site_lang');
+      if (saved) currentLang = saved;
+      var localBases = JSON.parse(localStorage.getItem('my_coc_bases') || '[]');
+      if (localBases.length > 0) {
+        allBases = localBases.concat(allBases);
+      }
     } catch(e) {}
 
     var dict = {
       my: {
         btnText: "English",
         ad: "[ ကြော်ငြာနေရာ - Banner Ad ]",
-        loading: "ဒေတာဆွဲတင်နေပါသည်...",
         noBases: "ရွေးချယ်ထားသော Base မရှိသေးပါ။",
         modalTitle: "Base အသစ်တင်ရန်",
         title: "ခေါင်းစဉ်",
@@ -177,7 +234,6 @@
       en: {
         btnText: "မြန်မာစာ",
         ad: "[ Advertisement - Banner Ad ]",
-        loading: "Loading layouts...",
         noBases: "No bases found in this filter.",
         modalTitle: "Share New Base",
         title: "Base Title",
@@ -195,40 +251,20 @@
 
     function applyLanguage(lang) {
       currentLang = lang;
-      try {
-        localStorage.setItem('site_lang', lang);
-      } catch(e) {}
-
+      try { localStorage.setItem('site_lang', lang); } catch(e) {}
       var t = dict[lang];
-      var btn = document.getElementById('langBtn');
-      if (btn) btn.innerText = t.btnText;
 
-      var ad = document.getElementById('adText');
-      if (ad) ad.innerText = t.ad;
-
-      var mTitle = document.getElementById('modalTitleText');
-      if (mTitle) mTitle.innerText = t.modalTitle;
-
-      var lt = document.getElementById('lblTitle');
-      if (lt) lt.innerText = t.title;
-
-      var lth = document.getElementById('lblTh');
-      if (lth) lth.innerText = t.th;
-
-      var ltype = document.getElementById('lblType');
-      if (ltype) ltype.innerText = t.type;
-
-      var llink = document.getElementById('lblLink');
-      if (llink) llink.innerText = t.link;
-
-      var limage = document.getElementById('lblImage');
-      if (limage) limage.innerText = t.image;
-
-      var bCancel = document.getElementById('btnCancel');
-      if (bCancel) bCancel.innerText = t.cancel;
-
-      var bSub = document.getElementById('submitBtn');
-      if (bSub) bSub.innerText = t.submit;
+      var el;
+      if (el = document.getElementById('langBtn')) el.innerText = t.btnText;
+      if (el = document.getElementById('adText')) el.innerText = t.ad;
+      if (el = document.getElementById('modalTitleText')) el.innerText = t.modalTitle;
+      if (el = document.getElementById('lblTitle')) el.innerText = t.title;
+      if (el = document.getElementById('lblTh')) el.innerText = t.th;
+      if (el = document.getElementById('lblType')) el.innerText = t.type;
+      if (el = document.getElementById('lblLink')) el.innerText = t.link;
+      if (el = document.getElementById('lblImage')) el.innerText = t.image;
+      if (el = document.getElementById('btnCancel')) el.innerText = t.cancel;
+      if (el = document.getElementById('submitBtn')) el.innerText = t.submit;
 
       renderBases();
     }
@@ -288,11 +324,6 @@
       return diffDay + "d " + (isMm ? "က" : "ago");
     }
 
-    function getImageUrl(originalUrl) {
-      if (!originalUrl) return 'https://placehold.co/600x400/1e293b/94a3b8?text=COC+Base';
-      return originalUrl.replace('https://jzsodpshhihelemowzvn.supabase.co', PROXY_URL);
-    }
-
     function renderBases() {
       var grid = document.getElementById('basesGrid');
       if (!grid) return;
@@ -330,9 +361,10 @@
       var html = '';
       for (var i = 0; i < filtered.length; i++) {
         var b = filtered[i];
+        var img = b.image_url || 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&auto=format&fit=crop&q=80';
         html += '<div class="bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden shadow-lg flex flex-col">' +
           '<div class="relative bg-neutral-950">' +
-            '<img src="' + getImageUrl(b.image_url) + '" alt="' + (b.title || 'COC Base') + '" class="w-full h-56 object-cover" onerror="this.src=\'https://placehold.co/600x400/1e293b/94a3b8?text=COC+Base\'">' +
+            '<img src="' + img + '" alt="' + (b.title || 'COC Base') + '" class="w-full h-56 object-cover" onerror="this.src=\'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&auto=format&fit=crop&q=80\'">' +
             '<div class="absolute top-2.5 left-2.5 flex items-center gap-1.5">' +
               '<span class="bg-amber-500 text-neutral-950 text-[11px] font-black px-2 py-0.5 rounded-md shadow">' + (b.th_level || 'TH') + '</span>' +
               '<span class="bg-neutral-900/90 text-amber-400 border border-neutral-700 text-[10px] font-bold px-2 py-0.5 rounded-md backdrop-blur-sm">' + (b.base_type || 'WAR') + '</span>' +
@@ -368,16 +400,6 @@
       var countEl = document.getElementById('count-' + baseId);
       if (countEl) countEl.innerText = parseInt(countEl.innerText || 0) + 1;
 
-      fetch(PROXY_URL + '/rest/v1/rpc/increment_copy', {
-        method: 'POST',
-        headers: {
-          'apikey': API_KEY,
-          'Authorization': 'Bearer ' + API_KEY,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ base_id: Number(baseId) })
-      }).catch(function() {});
-
       var orig = btn.innerHTML;
       btn.innerHTML = '<i class="fa-solid fa-check"></i> ' + dict[currentLang].copied;
       btn.classList.replace('bg-amber-500', 'bg-emerald-500');
@@ -386,56 +408,17 @@
         btn.innerHTML = orig;
         btn.classList.replace('bg-emerald-500', 'bg-amber-500');
         if (link) window.open(link, '_blank');
-      }, 500);
-    }
-
-    function fetchBases() {
-      var controller = new AbortController();
-      var timeoutId = setTimeout(function() {
-        controller.abort();
-      }, 6000); // ၆ စက္ကန့်အတွင်း လိုင်းမရောက်ပါက ပြတ်တောက်ပေးမည်
-
-      fetch(PROXY_URL + '/rest/v1/bases?select=*&order=created_at.desc', {
-        signal: controller.signal,
-        headers: {
-          'apikey': API_KEY,
-          'Authorization': 'Bearer ' + API_KEY
-        }
-      })
-      .then(function(res) {
-        clearTimeout(timeoutId);
-        return res.text();
-      })
-      .then(function(text) {
-        try {
-          var data = JSON.parse(text);
-          if (Array.isArray(data)) {
-            allBases = data;
-            renderBases();
-          } else {
-            throw new Error(text);
-          }
-        } catch (e) {
-          document.getElementById('basesGrid').innerHTML =
-            '<div class="text-rose-400 text-xs py-8 px-4 text-center border border-neutral-800 rounded-xl bg-neutral-900">' +
-              'ဆာဗာမှ တုံ့ပြန်ချက်: <br><span class="text-neutral-400 text-[11px]">' + text + '</span>' +
-            '</div>';
-        }
-      })
-      .catch(function(err) {
-        document.getElementById('basesGrid').innerHTML =
-          '<div class="text-rose-400 text-xs py-8 px-4 text-center border border-rose-900/50 bg-rose-950/20 rounded-xl">' +
-            'လိုင်းချိတ်ဆက်၍ မရပါ: ' + (err.name === 'AbortError' ? 'ဆာဗာ တုံ့ပြန်ချိန် ကြာမြင့်လွန်းနေပါသည် (Cloudflare Worker ကို Deploy လုပ်ပေးပါ)' : err.message) +
-          '</div>';
-      });
+      }, 400);
     }
 
     function openModal() {
-      document.getElementById('uploadModal').classList.remove('hidden');
+      var modal = document.getElementById('uploadModal');
+      if (modal) modal.style.display = 'flex';
     }
 
     function closeModal() {
-      document.getElementById('uploadModal').classList.add('hidden');
+      var modal = document.getElementById('uploadModal');
+      if (modal) modal.style.display = 'none';
     }
 
     function handleUpload(e) {
@@ -446,5 +429,4 @@
       btn.disabled = true;
 
       var file = document.getElementById('imageFile').files[0];
-      if (!file) {
-        alert("ဓာတ်ပုံ ရွေးခ
+      var titl
