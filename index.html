@@ -12,7 +12,7 @@
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
-<body class="bg-neutral-950 text-slate-100 min-h-screen pb-24 select-none">
+<body class="bg-neutral-950 text-slate-100 min-h-screen pb-16 select-none">
 
   <!-- Header -->
   <header class="sticky top-0 z-40 bg-neutral-900/95 backdrop-blur-md border-b border-neutral-800">
@@ -84,31 +84,9 @@
   </main>
 
   <!-- Floating Button (+ Post Base) -->
-  <button type="button" onclick="openModal()" class="fixed bottom-16 right-4 z-40 bg-emerald-500 hover:bg-emerald-600 text-neutral-950 w-12 h-12 rounded-full shadow-2xl flex items-center justify-center text-xl transition transform active:scale-95 border-2 border-emerald-400/40 cursor-pointer">
+  <button type="button" onclick="openModal()" class="fixed bottom-6 right-4 z-40 bg-emerald-500 hover:bg-emerald-600 text-neutral-950 w-14 h-14 rounded-full shadow-2xl flex items-center justify-center text-2xl transition transform active:scale-95 border-2 border-emerald-400/40 cursor-pointer">
     <i class="fa-solid fa-plus font-black"></i>
   </button>
-
-  <!-- Bottom Nav -->
-  <nav class="fixed bottom-0 inset-x-0 bg-neutral-900/95 backdrop-blur-md border-t border-neutral-800 z-30 max-w-md mx-auto">
-    <div class="flex justify-around items-center py-2.5 text-neutral-400 text-base">
-      <button type="button" onclick="resetHome()" class="flex flex-col items-center gap-0.5 text-amber-500">
-        <i class="fa-solid fa-house"></i>
-        <span class="text-[10px]" data-i18n="navHome">Home</span>
-      </button>
-      <button type="button" onclick="filterByCategoryDirect('WAR')" class="flex flex-col items-center gap-0.5 hover:text-slate-200">
-        <i class="fa-solid fa-crosshairs"></i>
-        <span class="text-[10px]">War</span>
-      </button>
-      <button type="button" onclick="filterByCategoryDirect('RANK')" class="flex flex-col items-center gap-0.5 hover:text-slate-200">
-        <i class="fa-solid fa-trophy"></i>
-        <span class="text-[10px]">Rank</span>
-      </button>
-      <button type="button" onclick="openModal()" class="flex flex-col items-center gap-0.5 hover:text-slate-200">
-        <i class="fa-solid fa-circle-plus text-amber-500 text-base"></i>
-        <span class="text-[10px]" data-i18n="navPost">Post</span>
-      </button>
-    </div>
-  </nav>
 
   <!-- Upload Modal -->
   <div id="uploadModal" class="fixed inset-0 bg-black/80 flex items-center justify-center p-4 hidden z-50">
@@ -178,6 +156,7 @@
 
   <script>
     const SUPABASE_URL = "https://jzsodpshhihelemowzvn.supabase.co";
+    // စာလုံးသေး eyJ ဖြင့် အမှန်ထည့်ထားပါသည်
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp6c29kcHNoaGloZWxlbW93enZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA4MjkwNDQsImV4cCI6MjEwNjQwNTA0NH0.x-gP_4a4rcKAjAhNgtegDlq8XD542Y3ufH54J6FVWlo";
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -206,9 +185,7 @@
         copied: "Copied!",
         errorPrefix: "အမှားဖြစ်သွားပါသည်: ",
         successMsg: "Base အောင်မြင်စွာ တင်ပြီးပါပြီ!",
-        placeholderTitle: "ဥပမာ - Anti-2 Star CWL Base",
-        navHome: "Home",
-        navPost: "တင်မည်"
+        placeholderTitle: "ဥပမာ - Anti-2 Star CWL Base"
       },
       en: {
         switchText: "မြန်မာစာ",
@@ -228,9 +205,7 @@
         copied: "Copied!",
         errorPrefix: "Error: ",
         successMsg: "Base shared successfully!",
-        placeholderTitle: "e.g. Anti-2 Star CWL Base",
-        navHome: "Home",
-        navPost: "Post"
+        placeholderTitle: "e.g. Anti-2 Star CWL Base"
       }
     };
 
@@ -253,11 +228,6 @@
         btn.className = "cat-pill px-3 py-1 rounded-lg bg-amber-500 text-neutral-950 whitespace-nowrap";
       }
       renderBases();
-    }
-
-    function filterByCategoryDirect(cat) {
-      const targetBtn = Array.from(document.querySelectorAll('.cat-pill')).find(b => b.innerText.trim().toUpperCase() === cat.trim().toUpperCase());
-      filterByCategory(cat, targetBtn);
     }
 
     function resetHome() {
@@ -291,14 +261,17 @@
 
       let filtered = [...allBases];
 
+      // TH Filter
       if (currentFilterTh !== 'ALL') {
         filtered = filtered.filter(b => (b.th_level || '').toString().trim().toUpperCase() === currentFilterTh.trim().toUpperCase());
       }
 
+      // Category Filter (All, War, CWL, Farming, Hybrid, Rank, Funny)
       if (currentFilterCat !== 'ALL') {
         filtered = filtered.filter(b => (b.base_type || '').toString().trim().toUpperCase() === currentFilterCat.trim().toUpperCase());
       }
 
+      // Sorting (NEW / POPULAR / ALL)
       if (currentSort === 'NEW') {
         filtered.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
       } else if (currentSort === 'POPULAR') {
@@ -423,4 +396,40 @@
         const file = fileInput.files[0];
         if (!file) throw new Error("ဓာတ်ပုံ ရွေးချယ်ပေးပါ");
 
-        const fileExt = file.name.split('.')
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+
+        const { error: uploadError } = await db.storage.from('base-images').upload(fileName, file);
+        if (uploadError) throw uploadError;
+
+        const { data: urlData } = db.storage.from('base-images').getPublicUrl(fileName);
+
+        const title = document.getElementById('baseTitle').value;
+        const th_level = document.getElementById('thLevel').value;
+        const base_type = document.getElementById('baseType').value;
+        const link = document.getElementById('baseLink').value;
+
+        const { error: dbError } = await db.from('bases').insert([{ 
+          title, th_level, base_type, link, image_url: urlData.publicUrl, copy_count: 0
+        }]);
+
+        if (dbError) throw dbError;
+
+        alert(t.successMsg);
+        e.target.reset();
+        closeModal();
+        fetchBases();
+      } catch (err) {
+        alert(t.errorPrefix + err.message);
+      } finally {
+        btn.innerText = t.submitBtn;
+        btn.disabled = false;
+      }
+    }
+
+    // Run Initial
+    setLanguage(currentLang);
+    fetchBases();
+  </script>
+</body>
+</html>
