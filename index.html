@@ -4,23 +4,25 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>ClashBase Hub - Professional COC Layouts</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
-    body { background-color: #0a0a0a; color: #f8fafc; padding-bottom: 90px; }
+    body { background-color: #0a0a0a; color: #f8fafc; padding-bottom: 95px; }
     
     /* Header */
     header { position: sticky; top: 0; z-index: 40; background-color: rgba(23, 23, 23, 0.95); border-bottom: 1px solid #262626; backdrop-filter: blur(8px); }
     .header-top { max-width: 480px; margin: 0 auto; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; gap: 6px; }
-    .logo { font-size: 18px; font-weight: 800; color: #f59e0b; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+    .logo { font-size: 19px; font-weight: 800; color: #f59e0b; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+    .logo i { font-size: 20px; }
     .controls { display: flex; align-items: center; gap: 6px; }
     
-    .btn-lang { background: #262626; color: #f59e0b; border: 1px solid #404040; padding: 5px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; }
-    .select-box { background: #262626; color: #f59e0b; border: 1px solid #404040; padding: 5px 6px; border-radius: 6px; font-size: 11px; font-weight: bold; outline: none; cursor: pointer; }
+    .btn-lang { background: #262626; color: #f59e0b; border: 1px solid #404040; padding: 6px 9px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; }
+    .select-box { background: #262626; color: #f59e0b; border: 1px solid #404040; padding: 6px 7px; border-radius: 6px; font-size: 11px; font-weight: bold; outline: none; cursor: pointer; }
     
     /* Category Scroll */
     .cat-bar { max-width: 480px; margin: 0 auto; padding: 4px 12px 10px; display: flex; gap: 6px; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; }
     .cat-bar::-webkit-scrollbar { display: none; }
-    .cat-btn { background: #262626; color: #cbd5e1; border: none; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; }
+    .cat-btn { background: #262626; color: #cbd5e1; border: none; padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; }
     .cat-btn.active { background: #f59e0b; color: #0a0a0a; }
 
     /* Ad Banner */
@@ -30,20 +32,31 @@
     /* Layout Cards */
     .feed { max-width: 480px; margin: 0 auto; padding: 10px 14px; display: flex; flex-direction: column; gap: 16px; }
     .card { background: #171717; border: 1px solid #262626; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; }
-    .img-wrap { position: relative; width: 100%; height: 210px; background: #000; }
+    .img-wrap { position: relative; width: 100%; height: 215px; background: #000; }
     .img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .badge-th { position: absolute; top: 10px; left: 10px; background: #f59e0b; color: #000; font-size: 11px; font-weight: 900; padding: 3px 7px; border-radius: 6px; }
-    .badge-cat { position: absolute; top: 10px; left: 62px; background: rgba(0,0,0,0.8); color: #f59e0b; border: 1px solid #404040; font-size: 10px; font-weight: bold; padding: 3px 6px; border-radius: 6px; }
+    .badge-th { position: absolute; top: 10px; left: 10px; background: #f59e0b; color: #000; font-size: 11px; font-weight: 900; padding: 3px 8px; border-radius: 6px; }
+    .badge-cat { position: absolute; top: 10px; left: 66px; background: rgba(0,0,0,0.85); color: #f59e0b; border: 1px solid #404040; font-size: 10px; font-weight: bold; padding: 3px 7px; border-radius: 6px; }
     
-    .card-body { padding: 12px; }
-    .card-title { font-size: 14px; font-weight: bold; color: #f8fafc; margin-bottom: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .card-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #262626; padding-top: 10px; font-size: 12px; color: #94a3b8; }
-    .meta-info { display: flex; gap: 12px; align-items: center; }
-    .btn-copy { background: #f59e0b; color: #0a0a0a; border: none; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+    .card-body { padding: 14px 12px; }
+    .card-title { font-size: 15px; font-weight: 700; color: #f8fafc; margin-bottom: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .card-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #262626; padding-top: 12px; }
+    
+    /* Meta Info (Icon, Counts, Time) */
+    .meta-info { display: flex; gap: 16px; align-items: center; font-size: 13.5px; color: #cbd5e1; }
+    .meta-item { display: flex; align-items: center; gap: 5px; font-weight: 600; }
+    .meta-item i { color: #f59e0b; font-size: 14px; }
+    .meta-time { display: flex; align-items: center; gap: 5px; color: #94a3b8; font-size: 13px; font-weight: 500; }
+    .meta-time i { color: #94a3b8; font-size: 13px; }
+
+    /* Larger Copy Button */
+    .btn-copy { background: #f59e0b; color: #0a0a0a; border: none; padding: 8px 16px; border-radius: 9px; font-size: 13.5px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: transform 0.1s; }
+    .btn-copy:active { transform: scale(0.96); }
+    .btn-copy i { font-size: 14px; }
     .btn-copy.done { background: #10b981; color: #fff; }
 
     /* Floating Add Button */
-    .fab { position: fixed; bottom: 24px; right: 18px; width: 56px; height: 56px; background: #10b981; border: 2px solid #34d399; border-radius: 50%; color: #000; font-size: 32px; font-weight: 900; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(0,0,0,0.6); cursor: pointer; z-index: 50; }
+    .fab { position: fixed; bottom: 24px; right: 18px; width: 56px; height: 56px; background: #10b981; border: 2px solid #34d399; border-radius: 50%; color: #000; font-size: 24px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(0,0,0,0.6); cursor: pointer; z-index: 50; }
+    .fab:active { transform: scale(0.94); }
 
     /* Modal */
     .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; padding: 16px; z-index: 60; }
@@ -51,11 +64,11 @@
     .modal-box { background: #171717; border: 1px solid #262626; border-radius: 16px; width: 100%; max-width: 440px; padding: 18px; max-height: 90vh; overflow-y: auto; }
     .modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
     .modal-head h2 { font-size: 16px; font-weight: bold; color: #f59e0b; }
-    .modal-close { background: none; border: none; font-size: 24px; color: #94a3b8; cursor: pointer; }
+    .modal-close { background: none; border: none; font-size: 20px; color: #94a3b8; cursor: pointer; padding: 4px; }
 
     .form-group { margin-bottom: 12px; }
     .form-group label { display: block; font-size: 12px; color: #94a3b8; margin-bottom: 4px; }
-    .form-input { width: 100%; background: #0a0a0a; border: 1px solid #262626; border-radius: 8px; padding: 8px 10px; color: #fff; font-size: 12px; outline: none; }
+    .form-input { width: 100%; background: #0a0a0a; border: 1px solid #262626; border-radius: 8px; padding: 9px 10px; color: #fff; font-size: 12px; outline: none; }
     .form-row { display: flex; gap: 8px; }
     .form-row > div { flex: 1; }
     .modal-btns { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
@@ -69,12 +82,14 @@
   <!-- Header -->
   <header>
     <div class="header-top">
-      <div class="logo" id="homeLogo">🛡️ ClashBase</div>
+      <div class="logo" id="homeLogo">
+        <i class="fa-solid fa-shield-halved"></i> ClashBase
+      </div>
       <div class="controls">
         <button type="button" class="btn-lang" id="langToggle">English</button>
         <select class="select-box" id="sortFilter">
-          <option value="NEW">⚡ NEW</option>
-          <option value="POPULAR">🔥 POPULAR</option>
+          <option value="NEW">NEW</option>
+          <option value="POPULAR">POPULAR</option>
         </select>
         <select class="select-box" id="thFilter">
           <option value="ALL">ALL TH</option>
@@ -112,14 +127,16 @@
   <main class="feed" id="feedContainer"></main>
 
   <!-- Floating Add Button -->
-  <button type="button" class="fab" id="openAddModal">+</button>
+  <button type="button" class="fab" id="openAddModal">
+    <i class="fa-solid fa-plus"></i>
+  </button>
 
   <!-- Upload Modal -->
   <div class="modal" id="modalWindow">
     <div class="modal-box">
       <div class="modal-head">
         <h2 id="modalTitle">Base အသစ်တင်ရန်</h2>
-        <button type="button" class="modal-close" id="closeAddModal">&times;</button>
+        <button type="button" class="modal-close" id="closeAddModal"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <form id="newPostForm">
         <div class="form-group">
@@ -174,7 +191,6 @@
     var activeCat = 'ALL';
     var isBurmese = true;
 
-    // LocalStorage စနစ်တကျ ပြန်ဖတ်ခြင်း
     function getStoredBases() {
       try {
         var data = localStorage.getItem('stored_coc_bases');
@@ -220,10 +236,12 @@
             '<div class="card-title">' + b.title + '</div>' +
             '<div class="card-footer">' +
               '<div class="meta-info">' +
-                '<span>📋 <b class="copy-cnt">' + (b.copies || 0) + '</b></span>' +
-                '<span class="time-txt">' + b.time + '</span>' +
+                '<span class="meta-item"><i class="fa-regular fa-copy"></i> <b class="copy-cnt">' + (b.copies || 0) + '</b></span>' +
+                '<span class="meta-time"><i class="fa-regular fa-clock"></i> <span class="time-val">' + b.time + '</span></span>' +
               '</div>' +
-              '<button type="button" class="btn-copy" data-id="' + b.id + '" data-link="' + b.link + '" onclick="handleCopyBtn(this)">📥 <span class="copy-txt">Copy Layout</span></button>' +
+              '<button type="button" class="btn-copy" data-id="' + b.id + '" data-link="' + b.link + '" onclick="handleCopyBtn(this)">' +
+                '<i class="fa-solid fa-download"></i> <span class="copy-txt">Copy Layout</span>' +
+              '</button>' +
             '</div>' +
           '</div>' +
         '</div>';
@@ -231,7 +249,7 @@
       container.innerHTML = html;
     }
 
-    // Category Tabs Event
+    // Category Tabs
     var catButtons = document.querySelectorAll('.cat-btn');
     for (var i = 0; i < catButtons.length; i++) {
       catButtons[i].onclick = function() {
@@ -242,21 +260,11 @@
       };
     }
 
-    // TH Select
-    document.getElementById('thFilter').onchange = function() {
-      activeTh = this.value;
-      renderFeed();
-    };
-
-    // Sort Select
-    document.getElementById('sortFilter').onchange = function() {
-      renderFeed();
-    };
-
-    // Home Logo Reset
+    // Filters
+    document.getElementById('thFilter').onchange = function() { activeTh = this.value; renderFeed(); };
+    document.getElementById('sortFilter').onchange = function() { renderFeed(); };
     document.getElementById('homeLogo').onclick = function() {
-      activeTh = 'ALL';
-      activeCat = 'ALL';
+      activeTh = 'ALL'; activeCat = 'ALL';
       document.getElementById('thFilter').value = 'ALL';
       document.getElementById('sortFilter').value = 'NEW';
       for (var i = 0; i < catButtons.length; i++) catButtons[i].classList.remove('active');
@@ -264,7 +272,7 @@
       renderFeed();
     };
 
-    // Language Switcher
+    // Language Toggle
     document.getElementById('langToggle').onclick = function() {
       isBurmese = !isBurmese;
       this.innerText = isBurmese ? "English" : "မြန်မာစာ";
@@ -280,7 +288,7 @@
       renderFeed();
     };
 
-    // Copy Layout နှိပ်သည့်အခါ Clash of Clans ဂိမ်းထဲ တိုက်ရိုက် ခုန်ကူးဖွင့်ခြင်း
+    // Copy Layout Action (COC Game တိုက်ရိုက်ပွင့်ခြင်း)
     window.handleCopyBtn = function(btn) {
       var link = btn.getAttribute('data-link');
       var id = btn.getAttribute('data-id');
@@ -288,7 +296,6 @@
 
       var cleanLink = link.trim();
 
-      // Count တိုးခြင်း
       for (var i = 0; i < allBases.length; i++) {
         if (String(allBases[i].id) === String(id)) {
           allBases[i].copies = (allBases[i].copies || 0) + 1;
@@ -305,7 +312,6 @@
         if (cnt) cnt.innerText = parseInt(cnt.innerText || 0) + 1;
       }
 
-      // Clipboard ကူးယူခြင်း
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(cleanLink).catch(function() {});
       }
@@ -314,7 +320,7 @@
       if (txtSpan) txtSpan.innerText = "Copied!";
       btn.classList.add('done');
 
-      // COC ဂိမ်းထဲသို့ တိုက်ရိုက် ရောက်ရှိစေခြင်း
+      // COC ဂိမ်းထဲသို့ တိုက်ရိုက် ခုန်ကူးဖွင့်ခြင်း
       window.location.href = cleanLink;
 
       setTimeout(function() {
@@ -323,14 +329,14 @@
       }, 2000);
     };
 
-    // Modal Popup Controls
+    // Modal
     var modal = document.getElementById('modalWindow');
     document.getElementById('openAddModal').onclick = function() { modal.classList.add('show'); };
     function closeModal() { modal.classList.remove('show'); }
     document.getElementById('closeAddModal').onclick = closeModal;
     document.getElementById('cancelAddModal').onclick = closeModal;
 
-    // ဓာတ်ပုံအရွယ်အစားကို ပေါ့ပါးသွားအောင် အလိုအလျောက်ချုံ့ပေးသည့် function (Canvas Compression)
+    // Canvas Compression
     function compressImage(file, callback) {
       var reader = new FileReader();
       reader.onload = function(e) {
@@ -351,7 +357,6 @@
           var ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, width, height);
 
-          // JPEG 0.65 ဖြင့် ချုံ့ခြင်းဖြင့် Memory မပြည့်တော့ပါ
           var dataUrl = canvas.toDataURL('image/jpeg', 0.65);
           callback(dataUrl);
         };
@@ -360,7 +365,7 @@
       reader.readAsDataURL(file);
     }
 
-    // Base အသစ်တင်သည့် Form Submit
+    // Submit New Base
     document.getElementById('newPostForm').onsubmit = function(e) {
       e.preventDefault();
       var title = document.getElementById('newTitle').value.trim();
@@ -407,7 +412,6 @@
       });
     };
 
-    // စတင်ချိန် Feed ဆွဲတင်ခြင်း
     renderFeed();
   </script>
 </body>
