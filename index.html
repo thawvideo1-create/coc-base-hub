@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>COC Base Share - Clash Layouts</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen">
+  <header class="border-b border-slate-800 bg-slate-950 sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-shield-halved text-amber-500 text-2xl"></i>
+        <h1 class="text-xl font-bold tracking-wide">ClashBase Hub</h1>
+      </div>
+      <button onclick="openModal()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-semibold px-4 py-2 rounded-lg text-sm">
+        <i class="fa-solid fa-plus mr-1"></i> Base တင်မည်
+      </button>
+    </div>
+  </header>
+
+  <div class="max-w-6xl mx-auto px-4 my-4">
+    <div class="w-full h-20 bg-slate-800/50 border border-dashed border-slate-700 rounded-lg flex items-center justify-center text-slate-500 text-sm">
+      [ ကြော်ငြာနေရာ - Banner Ad ]
+    </div>
+  </div>
+
+  <main class="max-w-6xl mx-auto px-4 py-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+      <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-lg flex flex-col">
+        <div class="relative">
+          <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=600&q=80" alt="Base Screenshot" class="w-full h-48 object-cover">
+          <span class="absolute top-2 left-2 bg-amber-500 text-slate-950 text-xs font-bold px-2 py-1 rounded">TH 16</span>
+          <span class="absolute top-2 right-2 bg-slate-900/80 text-xs px-2 py-1 rounded">War Base</span>
+        </div>
+        <div class="p-4 flex-1 flex flex-col justify-between">
+          <h3 class="font-bold text-lg mb-1">Anti-3 Star CWL Base</h3>
+          <div class="flex items-center justify-between pt-3 border-t border-slate-700">
+            <span class="text-xs text-slate-400">By PlayerOne</span>
+            <a href="https://link.clashofclans.com" target="_blank" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-4 py-1.5 rounded-lg text-sm flex items-center gap-1">
+              <i class="fa-solid fa-copy"></i> Copy
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div id="uploadModal" class="fixed inset-0 bg-black/70 flex items-center justify-center p-4 hidden z-50">
+    <div class="bg-slate-800 border border-slate-700 rounded-xl max-w-md w-full p-6">
+      <h2 class="text-lg font-bold mb-4">Base အသစ်တင်ရန်</h2>
+      <form onsubmit="handleUpload(event)" class="space-y-3">
+        <input type="text" required placeholder="ခေါင်းစဉ် (ဥပမာ - TH16 War Base)" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-sm">
+        <input type="url" required placeholder="COC Layout Link (https://...)" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-sm">
+        <input type="url" required placeholder="ဓာတ်ပုံ Link (https://...)" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-sm">
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModal()" class="px-4 py-2 bg-slate-700 rounded text-sm">ပိတ်မည်</button>
+          <button type="submit" class="px-4 py-2 bg-amber-500 font-bold text-slate-950 rounded text-sm">တင်မည်</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function openModal() { document.getElementById('uploadModal').classList.remove('hidden'); }
+    function closeModal() { document.getElementById('uploadModal').classList.add('hidden'); }
+    function handleUpload(e) { e.preventDefault(); alert('တင်ပြီးပါပြီ။'); closeModal(); }
+  </script>
+</body>
+</html>
