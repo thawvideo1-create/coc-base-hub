@@ -66,7 +66,7 @@
       </div>
     </div>
 
-    <!-- Category Filter Tabs (Swipeable Horizontal Scroll) -->
+    <!-- Category Filter Tabs -->
     <div class="max-w-md mx-auto px-3 pb-2 pt-1 flex items-center gap-1.5 overflow-x-auto no-scrollbar text-xs font-bold">
       <button onclick="filterByCategory('ALL', this)" class="cat-pill px-3 py-1 rounded-lg bg-amber-500 text-neutral-950 whitespace-nowrap transition">All</button>
       <button onclick="filterByCategory('WAR', this)" class="cat-pill px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 hover:bg-neutral-700 whitespace-nowrap transition">War</button>
@@ -174,7 +174,7 @@
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp6c29kcHNoaGloZWxlbW93enZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA4MjkwNDQsImV4cCI6MjEwNjQwNTA0NH0.x-gP_4a4rcKAjAhNgtegDlq8XD542Y3ufH54J6FVWlo";
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    const TH_LEVELS = Array.from({length: 15}, (_, i) => 18 - i); // TH 18 down to TH 4
+    const TH_LEVELS = Array.from({length: 15}, (_, i) => 18 - i);
 
     let allBases = [];
     let currentFilterTh = 'ALL';
@@ -314,17 +314,14 @@
 
       let filtered = [...allBases];
 
-      // TH Filter
       if (currentFilterTh !== 'ALL') {
-        filtered = filtered.filter(b => b.th_level === currentFilterTh);
+        filtered = filtered.filter(b => (b.th_level || '').trim().toUpperCase() === currentFilterTh.trim().toUpperCase());
       }
 
-      // Category Filter
       if (currentFilterCat !== 'ALL') {
-        filtered = filtered.filter(b => (b.base_type || '').toUpperCase() === currentFilterCat.toUpperCase());
+        filtered = filtered.filter(b => (b.base_type || '').trim().toUpperCase() === currentFilterCat.trim().toUpperCase());
       }
 
-      // Sort Filter (NEW / POPULAR / ALL)
       if (currentSort === 'NEW') {
         filtered.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
       } else if (currentSort === 'POPULAR') {
@@ -380,10 +377,7 @@
 
       try {
         await db.rpc('increment_copy', { base_id: baseId });
-      } catch (err) {
-        // fallback directly if rpc not created
-        console.warn(err);
-      }
+      } catch (err) {}
 
       const countSpan = document.getElementById(`count-${baseId}`);
       if (countSpan) countSpan.innerText = parseInt(countSpan.innerText || 0) + 1;
@@ -395,4 +389,10 @@
       setTimeout(() => {
         btn.innerHTML = originalText;
         btn.classList.replace('bg-emerald-500', 'bg-amber-500');
-        if (link)
+        if (link) window.open(link, '_blank');
+      }, 500);
+    }
+
+    async function fetchBases() {
+      try {
+        const { data, error } = await db.from('bases').sele
