@@ -102,7 +102,7 @@
 
   <script>
     const SUPABASE_URL = "https://jzsodpshhihelemowzvn.supabase.co";
-    const SUPABASE_ANON_KEY = "Sb_publishable_iZthfHzEZ5NwYnm3479NyQ_fUvcekcG";
+    const SUPABASE_ANON_KEY = "EyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp6c29kcHNoaGloZWxlbW93enZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA4MjkwNDQsImV4cCI6MjEwNjQwNTA0NH0.x-gP_4a4rcKAjAhNgtegDlq8XD542Y3ufH54J6FVWlo";
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     const translations = {
@@ -121,7 +121,7 @@
         labelImage: "Base ဓာတ်ပုံ (Gallery မှ ရွေးပါ)",
         cancelBtn: "ပိတ်မည်",
         submitBtn: "တင်မည်",
-        uploading: "ပုံတင်နေပါသည်...",
+        uploading: "တင်နေပါသည်...",
         copyBtn: "Copy",
         errorPrefix: "အမှားဖြစ်သွားပါသည်: ",
         successMsg: "Base အောင်မြင်စွာ တင်ပြီးပါပြီ!",
@@ -265,7 +265,6 @@
       }
     }
 
-    // Run initial language setup
     setLanguage(currentLang);
   </script>
 </body>
