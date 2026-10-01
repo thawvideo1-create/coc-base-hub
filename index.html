@@ -34,7 +34,7 @@
           <option value="ALL">📦 ALL</option>
         </select>
 
-        <!-- TH Select Dropdown (TH 10 မှ TH 18 အထိသာ) -->
+        <!-- TH Select Dropdown (TH 10 မှ TH 18) -->
         <select id="thFilterSelect" onchange="changeTh(this.value)" class="bg-neutral-800 text-amber-400 text-xs font-bold px-2 py-1 rounded-lg border border-neutral-700 focus:outline-none cursor-pointer">
           <option value="ALL">ALL TH</option>
           <option value="TH 18">TH 18</option>
@@ -98,7 +98,6 @@
         <div class="grid grid-cols-2 gap-2">
           <div>
             <label id="lblTh" class="text-xs text-neutral-400 block mb-1">Town Hall</label>
-            <!-- Upload Modal TH Select (TH 10 မှ TH 18 အထိသာ) -->
             <select id="thLevel" class="w-full bg-neutral-950 border border-neutral-800 rounded-lg p-2 text-xs text-white">
               <option value="TH 18">TH 18</option>
               <option value="TH 17">TH 17</option>
@@ -391,13 +390,20 @@
     }
 
     function fetchBases() {
+      var controller = new AbortController();
+      var timeoutId = setTimeout(function() {
+        controller.abort();
+      }, 6000); // ၆ စက္ကန့်အတွင်း လိုင်းမရောက်ပါက ပြတ်တောက်ပေးမည်
+
       fetch(PROXY_URL + '/rest/v1/bases?select=*&order=created_at.desc', {
+        signal: controller.signal,
         headers: {
           'apikey': API_KEY,
           'Authorization': 'Bearer ' + API_KEY
         }
       })
       .then(function(res) {
+        clearTimeout(timeoutId);
         return res.text();
       })
       .then(function(text) {
@@ -412,14 +418,14 @@
         } catch (e) {
           document.getElementById('basesGrid').innerHTML =
             '<div class="text-rose-400 text-xs py-8 px-4 text-center border border-neutral-800 rounded-xl bg-neutral-900">' +
-              'ဆာဗာမှ ဒေတာပို့ချက်: <br><span class="text-neutral-400 text-[11px]">' + text + '</span>' +
+              'ဆာဗာမှ တုံ့ပြန်ချက်: <br><span class="text-neutral-400 text-[11px]">' + text + '</span>' +
             '</div>';
         }
       })
       .catch(function(err) {
         document.getElementById('basesGrid').innerHTML =
           '<div class="text-rose-400 text-xs py-8 px-4 text-center border border-rose-900/50 bg-rose-950/20 rounded-xl">' +
-            'လိုင်းချိတ်ဆက်၍ မရပါ: ' + err.message +
+            'လိုင်းချိတ်ဆက်၍ မရပါ: ' + (err.name === 'AbortError' ? 'ဆာဗာ တုံ့ပြန်ချိန် ကြာမြင့်လွန်းနေပါသည် (Cloudflare Worker ကို Deploy လုပ်ပေးပါ)' : err.message) +
           '</div>';
       });
     }
@@ -441,13 +447,4 @@
 
       var file = document.getElementById('imageFile').files[0];
       if (!file) {
-        alert("ဓာတ်ပုံ ရွေးချယ်ပေးပါ");
-        btn.innerText = t.submit;
-        btn.disabled = false;
-        return;
-      }
-
-      var fileExt = file.name.split('.').pop();
-      var fileName = Date.now() + '_' + Math.random().toString(36).substring(7) + '.' + fileExt;
-
-      fetch(PROXY_URL + '/storage/v1/object/base-im
+        alert("ဓာတ်ပုံ ရွေးခ
