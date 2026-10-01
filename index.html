@@ -16,26 +16,25 @@
   <!-- Header -->
   <header class="sticky top-0 z-40 bg-neutral-900/95 backdrop-blur-md border-b border-neutral-800">
     <div class="max-w-md mx-auto px-4 py-2.5 flex justify-between items-center gap-1">
-      <div class="flex items-center gap-1.5 cursor-pointer" onclick="resetHome()">
+      <div class="flex items-center gap-1.5 cursor-pointer" onclick="filterBases('ALL', 'ALL')">
         <i class="fa-solid fa-shield-halved text-amber-500 text-xl"></i>
         <span class="font-extrabold text-lg tracking-wider bg-gradient-to-r from-amber-400 to-amber-600 bg-clip-text text-transparent">ClashBase</span>
       </div>
 
       <div class="flex items-center gap-1.5">
         <!-- Language Switcher -->
-        <button type="button" id="langBtn" onclick="toggleLanguage()" class="px-2.5 py-1 rounded bg-neutral-800 hover:bg-neutral-700 text-xs font-bold border border-neutral-700 text-amber-400 cursor-pointer">
+        <button type="button" id="langBtn" onclick="toggleLang()" class="px-2.5 py-1 rounded bg-neutral-800 hover:bg-neutral-700 text-xs font-bold border border-neutral-700 text-amber-400 cursor-pointer">
           English
         </button>
 
-        <!-- Sort Select -->
-        <select id="sortSelect" onchange="changeSort(this.value)" class="bg-neutral-800 text-amber-400 text-xs font-bold px-2 py-1 rounded-lg border border-neutral-700 focus:outline-none cursor-pointer">
+        <!-- Sort Native Select -->
+        <select id="sortSelect" onchange="sortBases(this.value)" class="bg-neutral-800 text-amber-400 text-xs font-bold px-2 py-1 rounded-lg border border-neutral-700 focus:outline-none cursor-pointer">
           <option value="NEW">⚡ NEW</option>
           <option value="POPULAR">🔥 POPULAR</option>
-          <option value="ALL">📦 ALL</option>
         </select>
 
         <!-- TH Select Dropdown (TH 10 မှ TH 18) -->
-        <select id="thFilterSelect" onchange="changeTh(this.value)" class="bg-neutral-800 text-amber-400 text-xs font-bold px-2 py-1 rounded-lg border border-neutral-700 focus:outline-none cursor-pointer">
+        <select id="thSelect" onchange="onThChange(this.value)" class="bg-neutral-800 text-amber-400 text-xs font-bold px-2 py-1 rounded-lg border border-neutral-700 focus:outline-none cursor-pointer">
           <option value="ALL">ALL TH</option>
           <option value="TH 18">TH 18</option>
           <option value="TH 17">TH 17</option>
@@ -52,13 +51,13 @@
 
     <!-- Category Tabs -->
     <div class="max-w-md mx-auto px-3 pb-2 pt-1 flex items-center gap-1.5 overflow-x-auto no-scrollbar text-xs font-bold">
-      <button type="button" onclick="filterByCategory('ALL', this)" class="cat-pill px-3 py-1 rounded-lg bg-amber-500 text-neutral-950 whitespace-nowrap cursor-pointer">All</button>
-      <button type="button" onclick="filterByCategory('WAR', this)" class="cat-pill px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 whitespace-nowrap cursor-pointer">War</button>
-      <button type="button" onclick="filterByCategory('CWL', this)" class="cat-pill px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 whitespace-nowrap cursor-pointer">CWL</button>
-      <button type="button" onclick="filterByCategory('FARMING', this)" class="cat-pill px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 whitespace-nowrap cursor-pointer">Farming</button>
-      <button type="button" onclick="filterByCategory('HYBRID', this)" class="cat-pill px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 whitespace-nowrap cursor-pointer">Hybrid</button>
-      <button type="button" onclick="filterByCategory('RANK', this)" class="cat-pill px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 whitespace-nowrap cursor-pointer">Rank</button>
-      <button type="button" onclick="filterByCategory('FUNNY', this)" class="cat-pill px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 whitespace-nowrap cursor-pointer">Funny</button>
+      <button type="button" onclick="onCatChange('ALL', this)" class="cat-btn px-3 py-1 rounded-lg bg-amber-500 text-neutral-950 whitespace-nowrap cursor-pointer">All</button>
+      <button type="button" onclick="onCatChange('WAR', this)" class="cat-btn px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 whitespace-nowrap cursor-pointer">War</button>
+      <button type="button" onclick="onCatChange('CWL', this)" class="cat-btn px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 whitespace-nowrap cursor-pointer">CWL</button>
+      <button type="button" onclick="onCatChange('FARMING', this)" class="cat-btn px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 whitespace-nowrap cursor-pointer">Farming</button>
+      <button type="button" onclick="onCatChange('HYBRID', this)" class="cat-btn px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 whitespace-nowrap cursor-pointer">Hybrid</button>
+      <button type="button" onclick="onCatChange('RANK', this)" class="cat-btn px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 whitespace-nowrap cursor-pointer">Rank</button>
+      <button type="button" onclick="onCatChange('FUNNY', this)" class="cat-btn px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 whitespace-nowrap cursor-pointer">Funny</button>
     </div>
   </header>
 
@@ -69,36 +68,148 @@
     </div>
   </div>
 
-  <!-- Feed Container -->
+  <!-- Feed Container (Pure HTML တိုက်ရိုက်ပါဝင်သော Base များ) -->
   <main class="max-w-md mx-auto px-3 py-3">
-    <div id="basesGrid" class="space-y-4">
-      <!-- JavaScript ဖြင့် Base များ ချက်ချင်း တက်လာပါမည် -->
+    <div id="basesList" class="space-y-4">
+
+      <!-- Base 1 -->
+      <div class="base-card bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden shadow-lg flex flex-col" data-th="TH 18" data-cat="WAR" data-copies="152">
+        <div class="relative bg-neutral-950">
+          <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&auto=format&fit=crop&q=80" alt="TH 18 Anti-3 Star Base" class="w-full h-56 object-cover">
+          <div class="absolute top-2.5 left-2.5 flex items-center gap-1.5">
+            <span class="bg-amber-500 text-neutral-950 text-[11px] font-black px-2 py-0.5 rounded-md shadow">TH 18</span>
+            <span class="bg-neutral-900/90 text-amber-400 border border-neutral-700 text-[10px] font-bold px-2 py-0.5 rounded-md backdrop-blur-sm">WAR</span>
+          </div>
+        </div>
+        <div class="p-3">
+          <h3 class="font-bold text-sm mb-2.5 line-clamp-1 text-slate-100">TH 18 Anti-3 Star Legend Base</h3>
+          <div class="flex items-center justify-between text-neutral-400 text-xs border-t border-neutral-800/80 pt-2.5">
+            <div class="flex items-center gap-4">
+              <span class="flex items-center gap-1 font-semibold text-slate-300">
+                <i class="fa-regular fa-copy text-amber-400"></i>
+                <span class="copy-num">152</span>
+              </span>
+              <span class="flex items-center gap-1 text-[11px]">
+                <i class="fa-regular fa-clock"></i> <span>1h က</span>
+              </span>
+            </div>
+            <button type="button" onclick="copyLink('https://link.clashofclans.com/en', this)" class="copy-btn-el bg-amber-500 hover:bg-amber-600 text-neutral-950 font-bold px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5 transition cursor-pointer">
+              <i class="fa-solid fa-download"></i> <span>Copy Layout</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Base 2 -->
+      <div class="base-card bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden shadow-lg flex flex-col" data-th="TH 17" data-cat="CWL" data-copies="89">
+        <div class="relative bg-neutral-950">
+          <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&auto=format&fit=crop&q=80" alt="TH 17 CWL Base" class="w-full h-56 object-cover">
+          <div class="absolute top-2.5 left-2.5 flex items-center gap-1.5">
+            <span class="bg-amber-500 text-neutral-950 text-[11px] font-black px-2 py-0.5 rounded-md shadow">TH 17</span>
+            <span class="bg-neutral-900/90 text-amber-400 border border-neutral-700 text-[10px] font-bold px-2 py-0.5 rounded-md backdrop-blur-sm">CWL</span>
+          </div>
+        </div>
+        <div class="p-3">
+          <h3 class="font-bold text-sm mb-2.5 line-clamp-1 text-slate-100">TH 17 Defensive CWL Hard Base</h3>
+          <div class="flex items-center justify-between text-neutral-400 text-xs border-t border-neutral-800/80 pt-2.5">
+            <div class="flex items-center gap-4">
+              <span class="flex items-center gap-1 font-semibold text-slate-300">
+                <i class="fa-regular fa-copy text-amber-400"></i>
+                <span class="copy-num">89</span>
+              </span>
+              <span class="flex items-center gap-1 text-[11px]">
+                <i class="fa-regular fa-clock"></i> <span>3h က</span>
+              </span>
+            </div>
+            <button type="button" onclick="copyLink('https://link.clashofclans.com/en', this)" class="copy-btn-el bg-amber-500 hover:bg-amber-600 text-neutral-950 font-bold px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5 transition cursor-pointer">
+              <i class="fa-solid fa-download"></i> <span>Copy Layout</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Base 3 -->
+      <div class="base-card bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden shadow-lg flex flex-col" data-th="TH 16" data-cat="RANK" data-copies="240">
+        <div class="relative bg-neutral-950">
+          <img src="https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=800&auto=format&fit=crop&q=80" alt="TH 16 Trophy Base" class="w-full h-56 object-cover">
+          <div class="absolute top-2.5 left-2.5 flex items-center gap-1.5">
+            <span class="bg-amber-500 text-neutral-950 text-[11px] font-black px-2 py-0.5 rounded-md shadow">TH 16</span>
+            <span class="bg-neutral-900/90 text-amber-400 border border-neutral-700 text-[10px] font-bold px-2 py-0.5 rounded-md backdrop-blur-sm">RANK</span>
+          </div>
+        </div>
+        <div class="p-3">
+          <h3 class="font-bold text-sm mb-2.5 line-clamp-1 text-slate-100">TH 16 Trophy Push & Legend League</h3>
+          <div class="flex items-center justify-between text-neutral-400 text-xs border-t border-neutral-800/80 pt-2.5">
+            <div class="flex items-center gap-4">
+              <span class="flex items-center gap-1 font-semibold text-slate-300">
+                <i class="fa-regular fa-copy text-amber-400"></i>
+                <span class="copy-num">240</span>
+              </span>
+              <span class="flex items-center gap-1 text-[11px]">
+                <i class="fa-regular fa-clock"></i> <span>5h က</span>
+              </span>
+            </div>
+            <button type="button" onclick="copyLink('https://link.clashofclans.com/en', this)" class="copy-btn-el bg-amber-500 hover:bg-amber-600 text-neutral-950 font-bold px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5 transition cursor-pointer">
+              <i class="fa-solid fa-download"></i> <span>Copy Layout</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Base 4 -->
+      <div class="base-card bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden shadow-lg flex flex-col" data-th="TH 15" data-cat="FARMING" data-copies="65">
+        <div class="relative bg-neutral-950">
+          <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=800&auto=format&fit=crop&q=80" alt="TH 15 Farming Base" class="w-full h-56 object-cover">
+          <div class="absolute top-2.5 left-2.5 flex items-center gap-1.5">
+            <span class="bg-amber-500 text-neutral-950 text-[11px] font-black px-2 py-0.5 rounded-md shadow">TH 15</span>
+            <span class="bg-neutral-900/90 text-amber-400 border border-neutral-700 text-[10px] font-bold px-2 py-0.5 rounded-md backdrop-blur-sm">FARMING</span>
+          </div>
+        </div>
+        <div class="p-3">
+          <h3 class="font-bold text-sm mb-2.5 line-clamp-1 text-slate-100">TH 15 Resource & Dark Elixir Protection</h3>
+          <div class="flex items-center justify-between text-neutral-400 text-xs border-t border-neutral-800/80 pt-2.5">
+            <div class="flex items-center gap-4">
+              <span class="flex items-center gap-1 font-semibold text-slate-300">
+                <i class="fa-regular fa-copy text-amber-400"></i>
+                <span class="copy-num">65</span>
+              </span>
+              <span class="flex items-center gap-1 text-[11px]">
+                <i class="fa-regular fa-clock"></i> <span>8h က</span>
+              </span>
+            </div>
+            <button type="button" onclick="copyLink('https://link.clashofclans.com/en', this)" class="copy-btn-el bg-amber-500 hover:bg-amber-600 text-neutral-950 font-bold px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5 transition cursor-pointer">
+              <i class="fa-solid fa-download"></i> <span>Copy Layout</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
     </div>
   </main>
 
   <!-- Floating Action Button (+ Post Base) -->
-  <button type="button" onclick="openModal()" class="fixed bottom-6 right-4 z-40 bg-emerald-500 hover:bg-emerald-600 text-neutral-950 w-14 h-14 rounded-full shadow-2xl flex items-center justify-center text-2xl transition transform active:scale-95 border-2 border-emerald-400/40 cursor-pointer">
+  <button type="button" onclick="toggleModal(true)" class="fixed bottom-6 right-4 z-40 bg-emerald-500 hover:bg-emerald-600 text-neutral-950 w-14 h-14 rounded-full shadow-2xl flex items-center justify-center text-2xl transition transform active:scale-95 border-2 border-emerald-400/40 cursor-pointer">
     <i class="fa-solid fa-plus font-black"></i>
   </button>
 
   <!-- Upload Modal -->
-  <div id="uploadModal" class="fixed inset-0 bg-black/85 flex items-center justify-center p-4 z-50" style="display: none;">
+  <div id="uploadModal" class="fixed inset-0 bg-black/85 flex items-center justify-center p-4 z-50 hidden">
     <div class="bg-neutral-900 border border-neutral-800 rounded-2xl max-w-md w-full p-5 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center mb-3">
-        <h2 id="modalTitleText" class="text-base font-bold text-amber-400">Base အသစ်တင်ရန်</h2>
-        <button type="button" onclick="closeModal()" class="text-neutral-400 hover:text-white p-2 text-xl font-bold cursor-pointer">&times;</button>
+        <h2 id="modalTitle" class="text-base font-bold text-amber-400">Base အသစ်တင်ရန်</h2>
+        <button type="button" onclick="toggleModal(false)" class="text-neutral-400 hover:text-white p-2 text-2xl font-bold cursor-pointer">&times;</button>
       </div>
 
-      <form onsubmit="handleUpload(event)" class="space-y-3">
+      <form onsubmit="handlePostSubmit(event)" class="space-y-3">
         <div>
           <label id="lblTitle" class="text-xs text-neutral-400 block mb-1">ခေါင်းစဉ်</label>
-          <input type="text" id="baseTitle" required placeholder="ဥပမာ - Anti-3 Star CWL Base" class="w-full bg-neutral-950 border border-neutral-800 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-amber-500">
+          <input type="text" id="postTitle" required placeholder="ဥပမာ - Anti-3 Star CWL Base" class="w-full bg-neutral-950 border border-neutral-800 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-amber-500">
         </div>
 
         <div class="grid grid-cols-2 gap-2">
           <div>
-            <label id="lblTh" class="text-xs text-neutral-400 block mb-1">Town Hall</label>
-            <select id="thLevel" class="w-full bg-neutral-950 border border-neutral-800 rounded-lg p-2.5 text-xs text-white">
+            <label class="text-xs text-neutral-400 block mb-1">Town Hall</label>
+            <select id="postTh" class="w-full bg-neutral-950 border border-neutral-800 rounded-lg p-2.5 text-xs text-white">
               <option value="TH 18">TH 18</option>
               <option value="TH 17">TH 17</option>
               <option value="TH 16">TH 16</option>
@@ -111,8 +222,8 @@
             </select>
           </div>
           <div>
-            <label id="lblType" class="text-xs text-neutral-400 block mb-1">အမျိုးအစား</label>
-            <select id="baseType" class="w-full bg-neutral-950 border border-neutral-800 rounded-lg p-2.5 text-xs text-white font-medium">
+            <label class="text-xs text-neutral-400 block mb-1">အမျိုးအစား</label>
+            <select id="postCat" class="w-full bg-neutral-950 border border-neutral-800 rounded-lg p-2.5 text-xs text-white font-medium">
               <option value="WAR">WAR</option>
               <option value="RANK">RANK</option>
               <option value="CWL">CWL</option>
@@ -124,309 +235,140 @@
         </div>
 
         <div>
-          <label id="lblLink" class="text-xs text-neutral-400 block mb-1">COC Layout Link</label>
-          <input type="url" id="baseLink" required placeholder="https://link.clashofclans.com/..." class="w-full bg-neutral-950 border border-neutral-800 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-amber-500">
+          <label class="text-xs text-neutral-400 block mb-1">COC Layout Link</label>
+          <input type="url" id="postLink" required placeholder="https://link.clashofclans.com/..." class="w-full bg-neutral-950 border border-neutral-800 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-amber-500">
         </div>
 
         <div>
-          <label id="lblImage" class="text-xs text-neutral-400 block mb-1">Base ဓာတ်ပုံ (Gallery မှ ရွေးပါ)</label>
-          <input type="file" id="imageFile" accept="image/*" required class="w-full text-xs text-slate-400 file:mr-2 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-neutral-800 file:text-amber-400 hover:file:bg-neutral-700 cursor-pointer">
+          <label class="text-xs text-neutral-400 block mb-1">Base ဓာတ်ပုံ (Gallery မှ ရွေးပါ)</label>
+          <input type="file" id="postImg" accept="image/*" required class="w-full text-xs text-slate-400 file:mr-2 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-neutral-800 file:text-amber-400 hover:file:bg-neutral-700 cursor-pointer">
         </div>
 
         <div class="flex justify-end gap-2 pt-3">
-          <button type="button" onclick="closeModal()" id="btnCancel" class="px-4 py-2 bg-neutral-800 hover:bg-neutral-700 rounded-lg text-xs cursor-pointer">ပိတ်မည်</button>
-          <button type="submit" id="submitBtn" class="px-5 py-2 bg-amber-500 hover:bg-amber-600 font-bold text-neutral-950 rounded-lg text-xs cursor-pointer">တင်မည်</button>
+          <button type="button" onclick="toggleModal(false)" id="btnCancel" class="px-4 py-2 bg-neutral-800 hover:bg-neutral-700 rounded-lg text-xs cursor-pointer">ပိတ်မည်</button>
+          <button type="submit" id="btnSubmit" class="px-5 py-2 bg-amber-500 hover:bg-amber-600 font-bold text-neutral-950 rounded-lg text-xs cursor-pointer">တင်မည်</button>
         </div>
       </form>
     </div>
   </div>
 
   <script>
-    var PROXY_URL = "https://orange-sun-6c0d.thawzinlatt-tt.workers.dev";
-    var API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp6c29kcHNoaGloZWxlbW93enZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA4MjkwNDQsImV4cCI6MjEwNjQwNTA0NH0.x-gP_4a4rcKAjAhNgtegDlq8XD542Y3ufH54J6FVWlo";
+    var currentTh = 'ALL';
+    var currentCat = 'ALL';
+    var isMy = true;
 
-    // အဆင်သင့် ပါဝင်ပြီးသား Base များ (အင်တာနက် မစောင့်ဘဲ ချက်ချင်း ပေါ်စေရန်)
-    var initialBases = [
-      {
-        id: 101,
-        title: "TH 18 Anti-3 Star Legend Base",
-        th_level: "TH 18",
-        base_type: "WAR",
-        link: "https://link.clashofclans.com/en",
-        image_url: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&auto=format&fit=crop&q=80",
-        copy_count: 142,
-        created_at: new Date(Date.now() - 3600000).toISOString()
-      },
-      {
-        id: 102,
-        title: "TH 17 CWL Defensive Hard Base",
-        th_level: "TH 17",
-        base_type: "CWL",
-        link: "https://link.clashofclans.com/en",
-        image_url: "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&auto=format&fit=crop&q=80",
-        copy_count: 98,
-        created_at: new Date(Date.now() - 7200000).toISOString()
-      },
-      {
-        id: 103,
-        title: "TH 16 Trophy Push & Legend Base",
-        th_level: "TH 16",
-        base_type: "RANK",
-        link: "https://link.clashofclans.com/en",
-        image_url: "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=800&auto=format&fit=crop&q=80",
-        copy_count: 215,
-        created_at: new Date(Date.now() - 14400000).toISOString()
-      },
-      {
-        id: 104,
-        title: "TH 15 Farming & Loot Protection Base",
-        th_level: "TH 15",
-        base_type: "FARMING",
-        link: "https://link.clashofclans.com/en",
-        image_url: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=800&auto=format&fit=crop&q=80",
-        copy_count: 76,
-        created_at: new Date(Date.now() - 28800000).toISOString()
-      },
-      {
-        id: 105,
-        title: "TH 14 Funny Art Layout Base",
-        th_level: "TH 14",
-        base_type: "FUNNY",
-        link: "https://link.clashofclans.com/en",
-        image_url: "https://images.unsplash.com/photo-1579373903781-fd5c0c30c4cd?w=800&auto=format&fit=crop&q=80",
-        copy_count: 310,
-        created_at: new Date(Date.now() - 86400000).toISOString()
-      }
-    ];
+    function applyFilter() {
+      var cards = document.querySelectorAll('.base-card');
+      cards.forEach(function(card) {
+        var cardTh = card.getAttribute('data-th');
+        var cardCat = card.getAttribute('data-cat');
 
-    var allBases = initialBases.slice();
-    var currentFilterTh = 'ALL';
-    var currentFilterCat = 'ALL';
-    var currentSort = 'NEW';
-    var currentLang = 'my';
+        var matchTh = (currentTh === 'ALL' || currentTh === cardTh);
+        var matchCat = (currentCat === 'ALL' || currentCat === cardCat);
 
-    try {
-      var saved = localStorage.getItem('site_lang');
-      if (saved) currentLang = saved;
-      var localBases = JSON.parse(localStorage.getItem('my_coc_bases') || '[]');
-      if (localBases.length > 0) {
-        allBases = localBases.concat(allBases);
-      }
-    } catch(e) {}
-
-    var dict = {
-      my: {
-        btnText: "English",
-        ad: "[ ကြော်ငြာနေရာ - Banner Ad ]",
-        noBases: "ရွေးချယ်ထားသော Base မရှိသေးပါ။",
-        modalTitle: "Base အသစ်တင်ရန်",
-        title: "ခေါင်းစဉ်",
-        th: "Town Hall",
-        type: "အမျိုးအစား",
-        link: "COC Layout Link",
-        image: "Base ဓာတ်ပုံ (Gallery မှ ရွေးပါ)",
-        cancel: "ပိတ်မည်",
-        submit: "တင်မည်",
-        uploading: "တင်နေပါသည်...",
-        copy: "Copy Layout",
-        copied: "Copied!"
-      },
-      en: {
-        btnText: "မြန်မာစာ",
-        ad: "[ Advertisement - Banner Ad ]",
-        noBases: "No bases found in this filter.",
-        modalTitle: "Share New Base",
-        title: "Base Title",
-        th: "Town Hall",
-        type: "Category",
-        link: "COC Link",
-        image: "Base Screenshot (Gallery)",
-        cancel: "Cancel",
-        submit: "Publish",
-        uploading: "Uploading...",
-        copy: "Copy Layout",
-        copied: "Copied!"
-      }
-    };
-
-    function applyLanguage(lang) {
-      currentLang = lang;
-      try { localStorage.setItem('site_lang', lang); } catch(e) {}
-      var t = dict[lang];
-
-      var el;
-      if (el = document.getElementById('langBtn')) el.innerText = t.btnText;
-      if (el = document.getElementById('adText')) el.innerText = t.ad;
-      if (el = document.getElementById('modalTitleText')) el.innerText = t.modalTitle;
-      if (el = document.getElementById('lblTitle')) el.innerText = t.title;
-      if (el = document.getElementById('lblTh')) el.innerText = t.th;
-      if (el = document.getElementById('lblType')) el.innerText = t.type;
-      if (el = document.getElementById('lblLink')) el.innerText = t.link;
-      if (el = document.getElementById('lblImage')) el.innerText = t.image;
-      if (el = document.getElementById('btnCancel')) el.innerText = t.cancel;
-      if (el = document.getElementById('submitBtn')) el.innerText = t.submit;
-
-      renderBases();
+        if (matchTh && matchCat) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
     }
 
-    function toggleLanguage() {
-      applyLanguage(currentLang === 'my' ? 'en' : 'my');
+    function onThChange(val) {
+      currentTh = val;
+      applyFilter();
     }
 
-    function changeSort(val) {
-      currentSort = val;
-      renderBases();
-    }
-
-    function changeTh(val) {
-      currentFilterTh = val;
-      renderBases();
-    }
-
-    function filterByCategory(cat, btn) {
-      currentFilterCat = cat;
-      var pills = document.querySelectorAll('.cat-pill');
-      for (var i = 0; i < pills.length; i++) {
-        pills[i].className = "cat-pill px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 whitespace-nowrap cursor-pointer";
-      }
+    function onCatChange(cat, btn) {
+      currentCat = cat;
+      document.querySelectorAll('.cat-btn').forEach(function(b) {
+        b.className = "cat-btn px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 whitespace-nowrap cursor-pointer";
+      });
       if (btn) {
-        btn.className = "cat-pill px-3 py-1 rounded-lg bg-amber-500 text-neutral-950 whitespace-nowrap cursor-pointer";
+        btn.className = "cat-btn px-3 py-1 rounded-lg bg-amber-500 text-neutral-950 whitespace-nowrap cursor-pointer";
       }
-      renderBases();
+      applyFilter();
     }
 
-    function resetHome() {
-      currentFilterTh = 'ALL';
-      var thSel = document.getElementById('thFilterSelect');
-      if (thSel) thSel.value = 'ALL';
-
-      currentSort = 'NEW';
-      var sortSel = document.getElementById('sortSelect');
-      if (sortSel) sortSel.value = 'NEW';
-
-      var firstPill = document.querySelector('.cat-pill');
-      filterByCategory('ALL', firstPill);
+    function filterBases(th, cat) {
+      currentTh = th;
+      currentCat = cat;
+      var thEl = document.getElementById('thSelect');
+      if (thEl) thEl.value = th;
+      var firstCat = document.querySelector('.cat-btn');
+      onCatChange('ALL', firstCat);
     }
 
-    function formatTime(dateStr) {
-      if (!dateStr) return "Just now";
-      var d = new Date(dateStr);
-      var now = new Date();
-      var diffSec = Math.max(0, Math.floor((now - d) / 1000));
-      var isMm = currentLang === 'my';
+    function sortBases(type) {
+      var container = document.getElementById('basesList');
+      var cards = Array.from(document.querySelectorAll('.base-card'));
 
-      if (diffSec < 60) return isMm ? "ခုနက" : "Just now";
-      var diffMin = Math.floor(diffSec / 60);
-      if (diffMin < 60) return diffMin + "m " + (isMm ? "က" : "ago");
-      var diffHr = Math.floor(diffMin / 60);
-      if (diffHr < 24) return diffHr + "h " + (isMm ? "က" : "ago");
-      var diffDay = Math.floor(diffHr / 24);
-      return diffDay + "d " + (isMm ? "က" : "ago");
+      if (type === 'POPULAR') {
+        cards.sort(function(a, b) {
+          return parseInt(b.getAttribute('data-copies') || 0) - parseInt(a.getAttribute('data-copies') || 0);
+        });
+      }
+      cards.forEach(function(card) {
+        container.appendChild(card);
+      });
     }
 
-    function renderBases() {
-      var grid = document.getElementById('basesGrid');
-      if (!grid) return;
-      var t = dict[currentLang];
-
-      var filtered = allBases.slice();
-
-      if (currentFilterTh !== 'ALL') {
-        filtered = filtered.filter(function(b) {
-          return (b.th_level || '').toString().trim().toUpperCase() === currentFilterTh.trim().toUpperCase();
-        });
-      }
-
-      if (currentFilterCat !== 'ALL') {
-        filtered = filtered.filter(function(b) {
-          return (b.base_type || '').toString().trim().toUpperCase() === currentFilterCat.trim().toUpperCase();
-        });
-      }
-
-      if (currentSort === 'NEW') {
-        filtered.sort(function(a, b) {
-          return new Date(b.created_at || 0) - new Date(a.created_at || 0);
-        });
-      } else if (currentSort === 'POPULAR') {
-        filtered.sort(function(a, b) {
-          return (Number(b.copy_count) || 0) - (Number(a.copy_count) || 0);
-        });
-      }
-
-      if (filtered.length === 0) {
-        grid.innerHTML = '<div class="text-slate-400 text-xs col-span-full py-12 text-center">' + t.noBases + '</div>';
-        return;
-      }
-
-      var html = '';
-      for (var i = 0; i < filtered.length; i++) {
-        var b = filtered[i];
-        var img = b.image_url || 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&auto=format&fit=crop&q=80';
-        html += '<div class="bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden shadow-lg flex flex-col">' +
-          '<div class="relative bg-neutral-950">' +
-            '<img src="' + img + '" alt="' + (b.title || 'COC Base') + '" class="w-full h-56 object-cover" onerror="this.src=\'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&auto=format&fit=crop&q=80\'">' +
-            '<div class="absolute top-2.5 left-2.5 flex items-center gap-1.5">' +
-              '<span class="bg-amber-500 text-neutral-950 text-[11px] font-black px-2 py-0.5 rounded-md shadow">' + (b.th_level || 'TH') + '</span>' +
-              '<span class="bg-neutral-900/90 text-amber-400 border border-neutral-700 text-[10px] font-bold px-2 py-0.5 rounded-md backdrop-blur-sm">' + (b.base_type || 'WAR') + '</span>' +
-            '</div>' +
-          '</div>' +
-          '<div class="p-3">' +
-            '<h3 class="font-bold text-sm mb-2.5 line-clamp-1 text-slate-100">' + (b.title || 'Untitled Base') + '</h3>' +
-            '<div class="flex items-center justify-between text-neutral-400 text-xs border-t border-neutral-800/80 pt-2.5">' +
-              '<div class="flex items-center gap-4">' +
-                '<span class="flex items-center gap-1 font-semibold text-slate-300">' +
-                  '<i class="fa-regular fa-copy text-amber-400"></i> ' +
-                  '<span id="count-' + b.id + '">' + (b.copy_count || 0) + '</span>' +
-                '</span>' +
-                '<span class="flex items-center gap-1 text-[11px]">' +
-                  '<i class="fa-regular fa-clock"></i> ' +
-                  '<span>' + formatTime(b.created_at) + '</span>' +
-                '</span>' +
-              </div>' +
-              '<button type="button" onclick="handleCopy(\'' + b.id + '\', \'' + b.link + '\', this)" class="bg-amber-500 hover:bg-amber-600 text-neutral-950 font-bold px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5 transition cursor-pointer">' +
-                '<i class="fa-solid fa-download"></i> <span>' + t.copy + '</span>' +
-              '</button>' +
-            '</div>' +
-          '</div>' +
-        '</div>';
-      }
-      grid.innerHTML = html;
-    }
-
-    function handleCopy(baseId, link, btn) {
+    function copyLink(link, btn) {
       if (navigator.clipboard) {
         navigator.clipboard.writeText(link).catch(function() {});
       }
-      var countEl = document.getElementById('count-' + baseId);
-      if (countEl) countEl.innerText = parseInt(countEl.innerText || 0) + 1;
+      var card = btn.closest('.base-card');
+      var numSpan = card.querySelector('.copy-num');
+      if (numSpan) {
+        var count = parseInt(numSpan.innerText) + 1;
+        numSpan.innerText = count;
+        card.setAttribute('data-copies', count);
+      }
 
-      var orig = btn.innerHTML;
-      btn.innerHTML = '<i class="fa-solid fa-check"></i> ' + dict[currentLang].copied;
+      var origHtml = btn.innerHTML;
+      btn.innerHTML = '<i class="fa-solid fa-check"></i> ' + (isMy ? 'Copied!' : 'Copied!');
       btn.classList.replace('bg-amber-500', 'bg-emerald-500');
 
       setTimeout(function() {
-        btn.innerHTML = orig;
+        btn.innerHTML = origHtml;
         btn.classList.replace('bg-emerald-500', 'bg-amber-500');
         if (link) window.open(link, '_blank');
       }, 400);
     }
 
-    function openModal() {
+    function toggleModal(show) {
       var modal = document.getElementById('uploadModal');
-      if (modal) modal.style.display = 'flex';
+      if (modal) {
+        if (show) modal.classList.remove('hidden');
+        else modal.classList.add('hidden');
+      }
     }
 
-    function closeModal() {
-      var modal = document.getElementById('uploadModal');
-      if (modal) modal.style.display = 'none';
+    function toggleLang() {
+      isMy = !isMy;
+      var langBtn = document.getElementById('langBtn');
+      var ad = document.getElementById('adText');
+      var mTitle = document.getElementById('modalTitle');
+      var bCancel = document.getElementById('btnCancel');
+      var bSub = document.getElementById('btnSubmit');
+
+      if (isMy) {
+        langBtn.innerText = "English";
+        ad.innerText = "[ ကြော်ငြာနေရာ - Banner Ad ]";
+        mTitle.innerText = "Base အသစ်တင်ရန်";
+        bCancel.innerText = "ပိတ်မည်";
+        bSub.innerText = "တင်မည်";
+      } else {
+        langBtn.innerText = "မြန်မာစာ";
+        ad.innerText = "[ Advertisement - Banner Ad ]";
+        mTitle.innerText = "Share New Base";
+        bCancel.innerText = "Cancel";
+        bSub.innerText = "Publish";
+      }
     }
 
-    function handleUpload(e) {
+    function handlePostSubmit(e) {
       e.preventDefault();
-      var t = dict[currentLang];
-      var btn = document.getElementById('submitBtn');
-      btn.innerText = t.uploading;
-      btn.disabled = true;
-
-      var file = document.getElementById('imageFile').files[0];
-      var titl
+      var title = document.getElementById('postTitle').value;
+      var th = document.getElementById('postTh').value;
+      var cat = document.getElementById('postCat').valu
