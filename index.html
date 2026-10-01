@@ -27,15 +27,15 @@
           <span id="langBtnText">English</span>
         </button>
 
-        <!-- Sort Select (NEW / POPULAR / ALL) -->
-        <select id="sortSelect" onchange="changeSort(this.value)" class="bg-neutral-800 text-amber-400 text-xs font-bold px-2 py-1 rounded-lg border border-neutral-700 focus:outline-none">
+        <!-- Sort Select -->
+        <select id="sortSelect" onchange="changeSort(this.value)" class="bg-neutral-800 text-amber-400 text-xs font-bold px-2 py-1 rounded-lg border border-neutral-700 focus:outline-none cursor-pointer">
           <option value="NEW">⚡ NEW</option>
           <option value="POPULAR">🔥 POPULAR</option>
           <option value="ALL">📦 ALL</option>
         </select>
 
         <!-- TH Select Dropdown -->
-        <select id="thFilterSelect" onchange="changeTh(this.value)" class="bg-neutral-800 text-amber-400 text-xs font-bold px-2 py-1 rounded-lg border border-neutral-700 focus:outline-none">
+        <select id="thFilterSelect" onchange="changeTh(this.value)" class="bg-neutral-800 text-amber-400 text-xs font-bold px-2 py-1 rounded-lg border border-neutral-700 focus:outline-none cursor-pointer">
           <option value="ALL">ALL TH</option>
           <option value="TH 18">TH 18</option>
           <option value="TH 17">TH 17</option>
@@ -56,15 +56,15 @@
       </div>
     </div>
 
-    <!-- Category Tabs (All, War, CWL, Farming, Hybrid, Rank, Funny) -->
+    <!-- Category Tabs -->
     <div class="max-w-md mx-auto px-3 pb-2 pt-1 flex items-center gap-1.5 overflow-x-auto no-scrollbar text-xs font-bold">
-      <button type="button" onclick="filterByCategory('ALL', this)" class="cat-pill px-3 py-1 rounded-lg bg-amber-500 text-neutral-950 whitespace-nowrap">All</button>
-      <button type="button" onclick="filterByCategory('WAR', this)" class="cat-pill px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 whitespace-nowrap">War</button>
-      <button type="button" onclick="filterByCategory('CWL', this)" class="cat-pill px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 whitespace-nowrap">CWL</button>
-      <button type="button" onclick="filterByCategory('FARMING', this)" class="cat-pill px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 whitespace-nowrap">Farming</button>
-      <button type="button" onclick="filterByCategory('HYBRID', this)" class="cat-pill px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 whitespace-nowrap">Hybrid</button>
-      <button type="button" onclick="filterByCategory('RANK', this)" class="cat-pill px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 whitespace-nowrap">Rank</button>
-      <button type="button" onclick="filterByCategory('FUNNY', this)" class="cat-pill px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 whitespace-nowrap">Funny</button>
+      <button type="button" onclick="filterByCategory('ALL', this)" class="cat-pill px-3 py-1 rounded-lg bg-amber-500 text-neutral-950 whitespace-nowrap cursor-pointer">All</button>
+      <button type="button" onclick="filterByCategory('WAR', this)" class="cat-pill px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 whitespace-nowrap cursor-pointer">War</button>
+      <button type="button" onclick="filterByCategory('CWL', this)" class="cat-pill px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 whitespace-nowrap cursor-pointer">CWL</button>
+      <button type="button" onclick="filterByCategory('FARMING', this)" class="cat-pill px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 whitespace-nowrap cursor-pointer">Farming</button>
+      <button type="button" onclick="filterByCategory('HYBRID', this)" class="cat-pill px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 whitespace-nowrap cursor-pointer">Hybrid</button>
+      <button type="button" onclick="filterByCategory('RANK', this)" class="cat-pill px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 whitespace-nowrap cursor-pointer">Rank</button>
+      <button type="button" onclick="filterByCategory('FUNNY', this)" class="cat-pill px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 whitespace-nowrap cursor-pointer">Funny</button>
     </div>
   </header>
 
@@ -154,7 +154,6 @@
   </div>
 
   <script>
-    // Cloudflare Worker Proxy URL (မြန်မာပြည်တွင်းမှ တိုက်ရိုက်အလုပ်လုပ်သည်)
     const PROXY_URL = "https://orange-sun-6c0d.thawzinlatt-tt.workers.dev";
     const API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp6c29kcHNoaGloZWxlbW93enZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA4MjkwNDQsImV4cCI6MjEwNjQwNTA0NH0.x-gP_4a4rcKAjAhNgtegDlq8XD542Y3ufH54J6FVWlo";
 
@@ -220,10 +219,10 @@
     function filterByCategory(cat, btn) {
       currentFilterCat = cat;
       document.querySelectorAll('.cat-pill').forEach(b => {
-        b.className = "cat-pill px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 whitespace-nowrap";
+        b.className = "cat-pill px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 whitespace-nowrap cursor-pointer";
       });
       if (btn) {
-        btn.className = "cat-pill px-3 py-1 rounded-lg bg-amber-500 text-neutral-950 whitespace-nowrap";
+        btn.className = "cat-pill px-3 py-1 rounded-lg bg-amber-500 text-neutral-950 whitespace-nowrap cursor-pointer";
       }
       renderBases();
     }
@@ -269,7 +268,7 @@
         filtered = filtered.filter(b => (b.th_level || '').toString().trim().toUpperCase() === currentFilterTh.trim().toUpperCase());
       }
 
-      // Category Filter (All, War, CWL, Farming, Hybrid, Rank, Funny)
+      // Category Filter
       if (currentFilterCat !== 'ALL') {
         filtered = filtered.filter(b => (b.base_type || '').toString().trim().toUpperCase() === currentFilterCat.trim().toUpperCase());
       }
@@ -326,7 +325,6 @@
         window.open(link, '_blank');
       }
 
-      // Increment count via proxy API
       fetch(`${PROXY_URL}/rest/v1/rpc/increment_copy`, {
         method: 'POST',
         headers: {
@@ -351,7 +349,6 @@
       }, 500);
     }
 
-    // Direct Native Fetch (No jsdelivr library needed!)
     async function fetchBases() {
       try {
         const res = await fetch(`${PROXY_URL}/rest/v1/bases?select=*&order=created_at.desc`, {
@@ -362,7 +359,7 @@
         });
         
         if (!res.ok) {
-          throw new Error(`Server status: ${res.status}`);
+          throw new Error(`Proxy status error: ${res.status}`);
         }
 
         const data = await res.json();
@@ -421,7 +418,6 @@
         const fileExt = file.name.split('.').pop();
         const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
 
-        // Upload directly via Proxy Storage API
         const uploadRes = await fetch(`${PROXY_URL}/storage/v1/object/base-images/${fileName}`, {
           method: 'POST',
           headers: {
@@ -436,4 +432,7 @@
           throw new Error("ဓာတ်ပုံ တင်မရပါ");
         }
 
-        const publicImage
+        const publicImageUrl = `${PROXY_URL}/storage/v1/object/public/base-images/${fileName}`;
+
+        const title = document.getElementById('baseTitle').value;
+        const th_level = docu
