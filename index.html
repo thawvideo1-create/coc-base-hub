@@ -11,7 +11,7 @@
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
-<body class="bg-neutral-950 text-slate-100 min-h-screen pb-16 select-none">
+<body class="bg-neutral-950 text-slate-100 min-h-screen pb-20 select-none">
 
   <!-- Header -->
   <header class="sticky top-0 z-40 bg-neutral-900/95 backdrop-blur-md border-b border-neutral-800">
@@ -27,7 +27,7 @@
           English
         </button>
 
-        <!-- Sort Native Select -->
+        <!-- Sort Select -->
         <select id="sortSelect" onchange="changeSort(this.value)" class="bg-neutral-800 text-amber-400 text-xs font-bold px-2 py-1 rounded-lg border border-neutral-700 focus:outline-none cursor-pointer">
           <option value="NEW">⚡ NEW</option>
           <option value="POPULAR">🔥 POPULAR</option>
@@ -56,7 +56,7 @@
       </div>
     </div>
 
-    <!-- Category Tabs (All, War, CWL, Farming, Hybrid, Rank, Funny) -->
+    <!-- Category Tabs -->
     <div class="max-w-md mx-auto px-3 pb-2 pt-1 flex items-center gap-1.5 overflow-x-auto no-scrollbar text-xs font-bold">
       <button type="button" onclick="filterByCategory('ALL', this)" class="cat-pill px-3 py-1 rounded-lg bg-amber-500 text-neutral-950 whitespace-nowrap cursor-pointer">All</button>
       <button type="button" onclick="filterByCategory('WAR', this)" class="cat-pill px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 whitespace-nowrap cursor-pointer">War</button>
@@ -157,13 +157,13 @@
     const PROXY_URL = "https://orange-sun-6c0d.thawzinlatt-tt.workers.dev";
     const API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp6c29kcHNoaGloZWxlbW93enZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA4MjkwNDQsImV4cCI6MjEwNjQwNTA0NH0.x-gP_4a4rcKAjAhNgtegDlq8XD542Y3ufH54J6FVWlo";
 
-    var allBases = [];
-    var currentFilterTh = 'ALL';
-    var currentFilterCat = 'ALL';
-    var currentSort = 'NEW';
-    var currentLang = localStorage.getItem('site_lang') || 'my';
+    let allBases = [];
+    let currentFilterTh = 'ALL';
+    let currentFilterCat = 'ALL';
+    let currentSort = 'NEW';
+    let currentLang = localStorage.getItem('site_lang') || 'my';
 
-    var dict = {
+    const dict = {
       my: {
         btnText: "English",
         ad: "[ ကြော်ငြာနေရာ - Banner Ad ]",
@@ -179,9 +179,7 @@
         submit: "တင်မည်",
         uploading: "တင်နေပါသည်...",
         copy: "Copy Layout",
-        copied: "Copied!",
-        timeJust: "ခုနက",
-        timeAgo: "က"
+        copied: "Copied!"
       },
       en: {
         btnText: "မြန်မာစာ",
@@ -198,46 +196,25 @@
         submit: "Publish",
         uploading: "Uploading...",
         copy: "Copy Layout",
-        copied: "Copied!",
-        timeJust: "Just now",
-        timeAgo: "ago"
+        copied: "Copied!"
       }
     };
 
     function applyLanguage(lang) {
       currentLang = lang;
       localStorage.setItem('site_lang', lang);
-      var t = dict[lang];
+      const t = dict[lang];
 
-      var langBtn = document.getElementById('langBtn');
-      if (langBtn) langBtn.innerText = t.btnText;
-
-      var ad = document.getElementById('adText');
-      if (ad) ad.innerText = t.ad;
-
-      var mTitle = document.getElementById('modalTitleText');
-      if (mTitle) mTitle.innerText = t.modalTitle;
-
-      var lt = document.getElementById('lblTitle');
-      if (lt) lt.innerText = t.title;
-
-      var lth = document.getElementById('lblTh');
-      if (lth) lth.innerText = t.th;
-
-      var ltype = document.getElementById('lblType');
-      if (ltype) ltype.innerText = t.type;
-
-      var llink = document.getElementById('lblLink');
-      if (llink) llink.innerText = t.link;
-
-      var limage = document.getElementById('lblImage');
-      if (limage) limage.innerText = t.image;
-
-      var bCancel = document.getElementById('btnCancel');
-      if (bCancel) bCancel.innerText = t.cancel;
-
-      var bSub = document.getElementById('submitBtn');
-      if (bSub) bSub.innerText = t.submit;
+      document.getElementById('langBtn').innerText = t.btnText;
+      document.getElementById('adText').innerText = t.ad;
+      document.getElementById('modalTitleText').innerText = t.modalTitle;
+      document.getElementById('lblTitle').innerText = t.title;
+      document.getElementById('lblTh').innerText = t.th;
+      document.getElementById('lblType').innerText = t.type;
+      document.getElementById('lblLink').innerText = t.link;
+      document.getElementById('lblImage').innerText = t.image;
+      document.getElementById('btnCancel').innerText = t.cancel;
+      document.getElementById('submitBtn').innerText = t.submit;
 
       renderBases();
     }
@@ -258,10 +235,10 @@
 
     function filterByCategory(cat, btn) {
       currentFilterCat = cat;
-      var pills = document.querySelectorAll('.cat-pill');
-      for (var i = 0; i < pills.length; i++) {
-        pills[i].className = "cat-pill px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 whitespace-nowrap cursor-pointer";
-      }
+      const pills = document.querySelectorAll('.cat-pill');
+      pills.forEach(p => {
+        p.className = "cat-pill px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 whitespace-nowrap cursor-pointer";
+      });
       if (btn) {
         btn.className = "cat-pill px-3 py-1 rounded-lg bg-amber-500 text-neutral-950 whitespace-nowrap cursor-pointer";
       }
@@ -270,31 +247,27 @@
 
     function resetHome() {
       currentFilterTh = 'ALL';
-      var thSel = document.getElementById('thFilterSelect');
-      if (thSel) thSel.value = 'ALL';
-
+      document.getElementById('thFilterSelect').value = 'ALL';
       currentSort = 'NEW';
-      var sortSel = document.getElementById('sortSelect');
-      if (sortSel) sortSel.value = 'NEW';
-
-      var firstPill = document.querySelector('.cat-pill');
+      document.getElementById('sortSelect').value = 'NEW';
+      const firstPill = document.querySelector('.cat-pill');
       filterByCategory('ALL', firstPill);
     }
 
     function formatTime(dateStr) {
       if (!dateStr) return "Just now";
-      var d = new Date(dateStr);
-      var now = new Date();
-      var diffSec = Math.max(0, Math.floor((now - d) / 1000));
-      var isMm = currentLang === 'my';
+      const d = new Date(dateStr);
+      const now = new Date();
+      const diffSec = Math.max(0, Math.floor((now - d) / 1000));
+      const isMm = currentLang === 'my';
 
       if (diffSec < 60) return isMm ? "ခုနက" : "Just now";
-      var diffMin = Math.floor(diffSec / 60);
-      if (diffMin < 60) return diffMin + "m " + (isMm ? "က" : "ago");
-      var diffHr = Math.floor(diffMin / 60);
-      if (diffHr < 24) return diffHr + "h " + (isMm ? "က" : "ago");
-      var diffDay = Math.floor(diffHr / 24);
-      return diffDay + "d " + (isMm ? "က" : "ago");
+      const diffMin = Math.floor(diffSec / 60);
+      if (diffMin < 60) return `${diffMin}m ${isMm ? "က" : "ago"}`;
+      const diffHr = Math.floor(diffMin / 60);
+      if (diffHr < 24) return `${diffHr}h ${isMm ? "က" : "ago"}`;
+      const diffDay = Math.floor(diffHr / 24);
+      return `${diffDay}d ${isMm ? "က" : "ago"}`;
     }
 
     function getImageUrl(originalUrl) {
@@ -303,133 +276,113 @@
     }
 
     function renderBases() {
-      var grid = document.getElementById('basesGrid');
+      const grid = document.getElementById('basesGrid');
       if (!grid) return;
-      var t = dict[currentLang];
+      const t = dict[currentLang];
 
-      var filtered = allBases.slice();
+      let filtered = [...allBases];
 
       if (currentFilterTh !== 'ALL') {
-        filtered = filtered.filter(function(b) {
-          return (b.th_level || '').toString().trim().toUpperCase() === currentFilterTh.trim().toUpperCase();
-        });
+        filtered = filtered.filter(b => (b.th_level || '').toString().trim().toUpperCase() === currentFilterTh.trim().toUpperCase());
       }
 
       if (currentFilterCat !== 'ALL') {
-        filtered = filtered.filter(function(b) {
-          return (b.base_type || '').toString().trim().toUpperCase() === currentFilterCat.trim().toUpperCase();
-        });
+        filtered = filtered.filter(b => (b.base_type || '').toString().trim().toUpperCase() === currentFilterCat.trim().toUpperCase());
       }
 
       if (currentSort === 'NEW') {
-        filtered.sort(function(a, b) {
-          return new Date(b.created_at || 0) - new Date(a.created_at || 0);
-        });
+        filtered.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
       } else if (currentSort === 'POPULAR') {
-        filtered.sort(function(a, b) {
-          return (Number(b.copy_count) || 0) - (Number(a.copy_count) || 0);
-        });
+        filtered.sort((a, b) => (Number(b.copy_count) || 0) - (Number(a.copy_count) || 0));
       }
 
       if (filtered.length === 0) {
-        grid.innerHTML = '<div class="text-slate-400 text-xs col-span-full py-12 text-center">' + t.noBases + '</div>';
+        grid.innerHTML = `<div class="text-slate-400 text-xs col-span-full py-12 text-center">${t.noBases}</div>`;
         return;
       }
 
-      var html = '';
-      for (var i = 0; i < filtered.length; i++) {
-        var b = filtered[i];
-        html += '<div class="bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden shadow-lg flex flex-col">' +
-          '<div class="relative bg-neutral-950">' +
-            '<img src="' + getImageUrl(b.image_url) + '" alt="' + (b.title || 'COC Base') + '" class="w-full h-56 object-cover" onerror="this.src=\'https://placehold.co/600x400/1e293b/94a3b8?text=COC+Base\'">' +
-            '<div class="absolute top-2.5 left-2.5 flex items-center gap-1.5">' +
-              '<span class="bg-amber-500 text-neutral-950 text-[11px] font-black px-2 py-0.5 rounded-md shadow">' + (b.th_level || 'TH') + '</span>' +
-              '<span class="bg-neutral-900/90 text-amber-400 border border-neutral-700 text-[10px] font-bold px-2 py-0.5 rounded-md backdrop-blur-sm">' + (b.base_type || 'WAR') + '</span>' +
-            '</div>' +
-          '</div>' +
-          '<div class="p-3">' +
-            '<h3 class="font-bold text-sm mb-2.5 line-clamp-1 text-slate-100">' + (b.title || 'Untitled Base') + '</h3>' +
-            '<div class="flex items-center justify-between text-neutral-400 text-xs border-t border-neutral-800/80 pt-2.5">' +
-              '<div class="flex items-center gap-4">' +
-                '<span class="flex items-center gap-1 font-semibold text-slate-300">' +
-                  '<i class="fa-regular fa-copy text-amber-400"></i> ' +
-                  '<span id="count-' + b.id + '">' + (b.copy_count || 0) + '</span>' +
-                '</span>' +
-                '<span class="flex items-center gap-1 text-[11px]">' +
-                  '<i class="fa-regular fa-clock"></i> ' +
-                  '<span>' + formatTime(b.created_at) + '</span>' +
-                '</span>' +
-              </div>' +
-              '<button type="button" onclick="handleCopy(\'' + b.id + '\', \'' + b.link + '\', this)" class="bg-amber-500 hover:bg-amber-600 text-neutral-950 font-bold px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5 transition cursor-pointer">' +
-                '<i class="fa-solid fa-download"></i> <span>' + t.copy + '</span>' +
-              '</button>' +
-            '</div>' +
-          '</div>' +
-        '</div>';
-      }
-      grid.innerHTML = html;
+      grid.innerHTML = filtered.map(b => `
+        <div class="bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden shadow-lg flex flex-col">
+          <div class="relative bg-neutral-950">
+            <img src="${getImageUrl(b.image_url)}" alt="${b.title || 'COC Base'}" class="w-full h-56 object-cover" onerror="this.src='https://placehold.co/600x400/1e293b/94a3b8?text=COC+Base'">
+            <div class="absolute top-2.5 left-2.5 flex items-center gap-1.5">
+              <span class="bg-amber-500 text-neutral-950 text-[11px] font-black px-2 py-0.5 rounded-md shadow">${b.th_level || 'TH'}</span>
+              <span class="bg-neutral-900/90 text-amber-400 border border-neutral-700 text-[10px] font-bold px-2 py-0.5 rounded-md backdrop-blur-sm">${b.base_type || 'WAR'}</span>
+            </div>
+          </div>
+          <div class="p-3">
+            <h3 class="font-bold text-sm mb-2.5 line-clamp-1 text-slate-100">${b.title || 'Untitled Base'}</h3>
+            <div class="flex items-center justify-between text-neutral-400 text-xs border-t border-neutral-800/80 pt-2.5">
+              <div class="flex items-center gap-4">
+                <span class="flex items-center gap-1 font-semibold text-slate-300">
+                  <i class="fa-regular fa-copy text-amber-400"></i>
+                  <span id="count-${b.id}">${b.copy_count || 0}</span>
+                </span>
+                <span class="flex items-center gap-1 text-[11px]">
+                  <i class="fa-regular fa-clock"></i>
+                  <span>${formatTime(b.created_at)}</span>
+                </span>
+              </div>
+              <button type="button" onclick="handleCopy('${b.id}', '${b.link}', this)" class="bg-amber-500 hover:bg-amber-600 text-neutral-950 font-bold px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5 transition cursor-pointer">
+                <i class="fa-solid fa-download"></i> <span>${t.copy}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
     }
 
     function handleCopy(baseId, link, btn) {
       if (navigator.clipboard) {
-        navigator.clipboard.writeText(link).catch(function() {});
+        navigator.clipboard.writeText(link).catch(() => {});
       }
-      var countEl = document.getElementById('count-' + baseId);
+      const countEl = document.getElementById(`count-${baseId}`);
       if (countEl) countEl.innerText = parseInt(countEl.innerText || 0) + 1;
 
-      fetch(PROXY_URL + '/rest/v1/rpc/increment_copy', {
+      fetch(`${PROXY_URL}/rest/v1/rpc/increment_copy`, {
         method: 'POST',
         headers: {
           'apikey': API_KEY,
-          'Authorization': 'Bearer ' + API_KEY,
+          'Authorization': `Bearer ${API_KEY}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({ base_id: Number(baseId) })
-      }).catch(function() {});
+      }).catch(() => {});
 
-      var orig = btn.innerHTML;
-      btn.innerHTML = '<i class="fa-solid fa-check"></i> ' + dict[currentLang].copied;
+      const orig = btn.innerHTML;
+      btn.innerHTML = `<i class="fa-solid fa-check"></i> ${dict[currentLang].copied}`;
       btn.classList.replace('bg-amber-500', 'bg-emerald-500');
 
-      setTimeout(function() {
+      setTimeout(() => {
         btn.innerHTML = orig;
         btn.classList.replace('bg-emerald-500', 'bg-amber-500');
         if (link) window.open(link, '_blank');
       }, 500);
     }
 
-    function fetchBases() {
-      fetch(PROXY_URL + '/rest/v1/bases?select=*&order=created_at.desc', {
-        headers: {
-          'apikey': API_KEY,
-          'Authorization': 'Bearer ' + API_KEY
-        }
-      })
-      .then(function(res) {
-        return res.text();
-      })
-      .then(function(text) {
-        try {
-          var data = JSON.parse(text);
-          if (Array.isArray(data)) {
-            allBases = data;
-            renderBases();
-          } else {
-            throw new Error(text);
+    async function fetchBases() {
+      try {
+        const res = await fetch(`${PROXY_URL}/rest/v1/bases?select=*&order=created_at.desc`, {
+          headers: {
+            'apikey': API_KEY,
+            'Authorization': `Bearer ${API_KEY}`
           }
-        } catch (e) {
-          document.getElementById('basesGrid').innerHTML =
-            '<div class="text-amber-400 text-xs py-8 px-4 text-center border border-neutral-800 rounded-xl bg-neutral-900">' +
-              'Cloudflare Worker တွင် "Deploy" ခလုတ်ကို နှိပ်ပေးရန် လိုအပ်ပါသည် (လက်ရှိတွင် Hello World ပြနေပါသည်)။' +
-            '</div>';
+        });
+
+        if (!res.ok) {
+          const errText = await res.text();
+          throw new Error(`Worker Error (${res.status}): ${errText}`);
         }
-      })
-      .catch(function(err) {
-        document.getElementById('basesGrid').innerHTML =
-          '<div class="text-rose-400 text-xs py-8 px-4 text-center border border-rose-900/50 bg-rose-950/20 rounded-xl">' +
-            'ဒေတာရယူရာတွင် အမှားဖြစ်သွားပါသည်: ' + err.message +
-          '</div>';
-      });
+
+        const data = await res.json();
+        allBases = Array.isArray(data) ? data : [];
+        renderBases();
+      } catch (err) {
+        document.getElementById('basesGrid').innerHTML = `
+          <div class="text-rose-400 text-xs py-8 px-4 text-center border border-rose-900/50 bg-rose-950/20 rounded-xl">
+            ဒေတာရယူရာတွင် အမှားဖြစ်သွားပါသည်: <br>${err.message}
+          </div>`;
+      }
     }
 
     function openModal() {
@@ -440,6 +393,41 @@
       document.getElementById('uploadModal').classList.add('hidden');
     }
 
-    function handleUpload(e) {
+    async function handleUpload(e) {
       e.preventDefault();
-      var t = dic
+      const t = dict[currentLang];
+      const btn = document.getElementById('submitBtn');
+      btn.innerText = t.uploading;
+      btn.disabled = true;
+
+      try {
+        const file = document.getElementById('imageFile').files[0];
+        if (!file) throw new Error("ဓာတ်ပုံ ရွေးချယ်ပေးပါ");
+
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+
+        const uploadRes = await fetch(`${PROXY_URL}/storage/v1/object/base-images/${fileName}`, {
+          method: 'POST',
+          headers: {
+            'apikey': API_KEY,
+            'Authorization': `Bearer ${API_KEY}`,
+            'Content-Type': file.type || 'image/jpeg'
+          },
+          body: file
+        });
+
+        if (!uploadRes.ok) throw new Error("ဓာတ်ပုံ တင်မရပါ");
+
+        const publicImageUrl = `${PROXY_URL}/storage/v1/object/public/base-images/${fileName}`;
+        const title = document.getElementById('baseTitle').value;
+        const th_level = document.getElementById('thLevel').value;
+        const base_type = document.getElementById('baseType').value;
+        const link = document.getElementById('baseLink').value;
+
+        const insertRes = await fetch(`${PROXY_URL}/rest/v1/bases`, {
+          method: 'POST',
+          headers: {
+            'apikey': API_KEY,
+            'Authorization': `Bearer ${API_KEY}`,
+           
