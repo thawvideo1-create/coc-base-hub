@@ -7,13 +7,24 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    /* Hide scrollbar for IE, Edge and Firefox */
+    .no-scrollbar {
+      -ms-overflow-style: none;  /* IE and Edge */
+      scrollbar-width: none;  /* Firefox */
+    }
+  </style>
 </head>
-<body class="bg-neutral-950 text-slate-100 min-h-screen pb-20 select-none">
+<body class="bg-neutral-950 text-slate-100 min-h-screen pb-24 select-none">
 
   <!-- Top Navigation Header -->
-  <header class="sticky top-0 z-40 bg-neutral-900/90 backdrop-blur-md border-b border-neutral-800">
+  <header class="sticky top-0 z-40 bg-neutral-900/95 backdrop-blur-md border-b border-neutral-800">
     <div class="max-w-md mx-auto px-4 py-2.5 flex justify-between items-center">
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-1.5">
         <i class="fa-solid fa-shield-halved text-amber-500 text-xl"></i>
         <span class="font-extrabold text-lg tracking-wider bg-gradient-to-r from-amber-400 to-amber-600 bg-clip-text text-transparent">ClashBase</span>
       </div>
@@ -24,33 +35,59 @@
           <span id="langBtnText">English</span>
         </button>
 
-        <!-- TH Level Dropdown Filter Button -->
+        <!-- Sort Filter (NEW / POPULAR / ALL) -->
         <div class="relative">
-          <button onclick="toggleThMenu()" class="flex items-center gap-1.5 bg-neutral-800 hover:bg-neutral-700 text-amber-400 px-2.5 py-1 rounded-lg border border-neutral-700 text-xs font-bold transition">
-            <span id="selectedThText">ALL TH</span>
-            <i class="fa-solid fa-chevron-down text-[10px]"></i>
+          <button onclick="toggleSortMenu()" class="flex items-center gap-1 bg-neutral-800 hover:bg-neutral-700 text-amber-400 px-2 py-1 rounded-lg border border-neutral-700 text-xs font-bold transition">
+            <span id="selectedSortText">NEW</span>
+            <i class="fa-solid fa-chevron-down text-[9px]"></i>
           </button>
+          <div id="sortDropdown" class="hidden absolute right-0 mt-2 w-32 bg-neutral-900 border border-neutral-800 rounded-xl shadow-2xl z-50 p-1">
+            <button onclick="setSort('NEW')" class="w-full text-left px-3 py-1.5 text-xs font-bold hover:bg-neutral-800 rounded-lg text-amber-400 flex items-center justify-between">
+              <span>NEW</span>
+              <i class="fa-solid fa-bolt text-[10px]"></i>
+            </button>
+            <button onclick="setSort('POPULAR')" class="w-full text-left px-3 py-1.5 text-xs font-bold hover:bg-neutral-800 rounded-lg text-slate-200 flex items-center justify-between">
+              <span>POPULAR</span>
+              <i class="fa-solid fa-fire text-amber-500 text-[10px]"></i>
+            </button>
+            <button onclick="setSort('ALL')" class="w-full text-left px-3 py-1.5 text-xs font-bold hover:bg-neutral-800 rounded-lg text-slate-300 flex items-center justify-between">
+              <span>ALL</span>
+              <i class="fa-solid fa-layer-group text-[10px]"></i>
+            </button>
+          </div>
+        </div>
 
-          <!-- TH Dropdown List -->
-          <div id="thDropdown" class="hidden absolute right-0 mt-2 w-44 bg-neutral-900 border border-neutral-800 rounded-xl shadow-2xl overflow-y-auto max-h-80 z-50 p-1">
-            <button onclick="filterByTh('ALL')" class="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold hover:bg-neutral-800 rounded-lg text-left text-slate-200">
-              <i class="fa-solid fa-layer-group text-amber-400 w-4"></i> ALL TH
+        <!-- TH Level Dropdown Filter -->
+        <div class="relative">
+          <button onclick="toggleThMenu()" class="flex items-center gap-1 bg-neutral-800 hover:bg-neutral-700 text-amber-400 px-2.5 py-1 rounded-lg border border-neutral-700 text-xs font-bold transition">
+            <span id="selectedThText">TH 18</span>
+            <i class="fa-solid fa-chevron-down text-[9px]"></i>
+          </button>
+          <div id="thDropdown" class="hidden absolute right-0 mt-2 w-36 bg-neutral-900 border border-neutral-800 rounded-xl shadow-2xl overflow-y-auto max-h-72 z-50 p-1">
+            <button onclick="filterByTh('ALL')" class="w-full flex items-center gap-2 px-3 py-1.5 text-xs font-semibold hover:bg-neutral-800 rounded-lg text-left text-slate-200">
+              <i class="fa-solid fa-asterisk text-amber-400 text-[10px]"></i> ALL TH
             </button>
             <div id="thListItems"></div>
           </div>
         </div>
-
-        <!-- Post Base Button -->
-        <button onclick="openModal()" class="bg-amber-500 hover:bg-amber-600 text-neutral-950 font-bold px-2.5 py-1 rounded-lg text-xs flex items-center gap-1 transition">
-          <i class="fa-solid fa-plus"></i> <span data-i18n="addBaseBtn">Base တင်မည်</span>
-        </button>
       </div>
+    </div>
+
+    <!-- Category Filter Tabs (Swipeable Horizontal Scroll) -->
+    <div class="max-w-md mx-auto px-3 pb-2 pt-1 flex items-center gap-1.5 overflow-x-auto no-scrollbar text-xs font-bold">
+      <button onclick="filterByCategory('ALL', this)" class="cat-pill px-3 py-1 rounded-lg bg-amber-500 text-neutral-950 whitespace-nowrap transition">All</button>
+      <button onclick="filterByCategory('WAR', this)" class="cat-pill px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 hover:bg-neutral-700 whitespace-nowrap transition">War</button>
+      <button onclick="filterByCategory('CWL', this)" class="cat-pill px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 hover:bg-neutral-700 whitespace-nowrap transition">CWL</button>
+      <button onclick="filterByCategory('FARMING', this)" class="cat-pill px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 hover:bg-neutral-700 whitespace-nowrap transition">Farming</button>
+      <button onclick="filterByCategory('HYBRID', this)" class="cat-pill px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 hover:bg-neutral-700 whitespace-nowrap transition">Hybrid</button>
+      <button onclick="filterByCategory('RANK', this)" class="cat-pill px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 hover:bg-neutral-700 whitespace-nowrap transition">Rank</button>
+      <button onclick="filterByCategory('FUNNY', this)" class="cat-pill px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 hover:bg-neutral-700 whitespace-nowrap transition">Funny</button>
     </div>
   </header>
 
   <!-- Banner Ad Slot -->
-  <div class="max-w-md mx-auto px-4 mt-3">
-    <div class="w-full h-14 bg-neutral-900 border border-dashed border-neutral-800 rounded-xl flex items-center justify-center text-neutral-500 text-xs">
+  <div class="max-w-md mx-auto px-4 mt-2">
+    <div class="w-full h-12 bg-neutral-900 border border-dashed border-neutral-800 rounded-xl flex items-center justify-center text-neutral-500 text-xs">
       <span data-i18n="adPlaceholder">[ ကြော်ငြာနေရာ - Banner Ad ]</span>
     </div>
   </div>
@@ -62,23 +99,28 @@
     </div>
   </main>
 
+  <!-- Floating Action Button (+ Post Base) -->
+  <button onclick="openModal()" class="fixed bottom-16 right-4 z-40 bg-emerald-500 hover:bg-emerald-600 text-neutral-950 w-12 h-12 rounded-full shadow-2xl flex items-center justify-center text-xl transition transform active:scale-95 border-2 border-emerald-400/40">
+    <i class="fa-solid fa-plus font-black"></i>
+  </button>
+
   <!-- Bottom Navigation Bar -->
-  <nav class="fixed bottom-0 inset-x-0 bg-neutral-900/95 backdrop-blur-md border-t border-neutral-800 z-40 max-w-md mx-auto">
+  <nav class="fixed bottom-0 inset-x-0 bg-neutral-900/95 backdrop-blur-md border-t border-neutral-800 z-30 max-w-md mx-auto">
     <div class="flex justify-around items-center py-2.5 text-neutral-400 text-base">
-      <button onclick="filterByTh('ALL')" class="flex flex-col items-center gap-0.5 text-amber-500">
+      <button onclick="resetHome()" class="flex flex-col items-center gap-0.5 text-amber-500">
         <i class="fa-solid fa-house"></i>
         <span class="text-[10px]" data-i18n="navHome">Home</span>
       </button>
-      <button onclick="filterByCategory('WAR')" class="flex flex-col items-center gap-0.5 hover:text-slate-200">
+      <button onclick="filterByCategoryDirect('WAR')" class="flex flex-col items-center gap-0.5 hover:text-slate-200">
         <i class="fa-solid fa-crosshairs"></i>
         <span class="text-[10px]">War</span>
       </button>
-      <button onclick="filterByCategory('RANK')" class="flex flex-col items-center gap-0.5 hover:text-slate-200">
+      <button onclick="filterByCategoryDirect('RANK')" class="flex flex-col items-center gap-0.5 hover:text-slate-200">
         <i class="fa-solid fa-trophy"></i>
         <span class="text-[10px]">Rank</span>
       </button>
       <button onclick="openModal()" class="flex flex-col items-center gap-0.5 hover:text-slate-200">
-        <i class="fa-solid fa-circle-plus text-amber-500 text-lg"></i>
+        <i class="fa-solid fa-circle-plus text-amber-500 text-base"></i>
         <span class="text-[10px]" data-i18n="navPost">Post</span>
       </button>
     </div>
@@ -106,9 +148,9 @@
           <div>
             <label class="text-xs text-neutral-400 block mb-1" data-i18n="labelBaseType">အမျိုးအစား</label>
             <select id="baseType" class="w-full bg-neutral-950 border border-neutral-800 rounded-lg p-2 text-xs text-white font-medium">
+              <option value="WAR">WAR</option>
               <option value="RANK">RANK</option>
               <option value="CWL">CWL</option>
-              <option value="WAR">WAR</option>
               <option value="HYBRID">HYBRID</option>
               <option value="FARMING">FARMING</option>
               <option value="FUNNY">FUNNY</option>
@@ -144,12 +186,12 @@
     let allBases = [];
     let currentFilterTh = 'ALL';
     let currentFilterCat = 'ALL';
+    let currentSort = 'NEW'; // 'NEW', 'POPULAR', 'ALL'
     let currentLang = localStorage.getItem('site_lang') || 'my';
 
     const translations = {
       my: {
         switchText: "English",
-        addBaseBtn: "Base တင်မည်",
         adPlaceholder: "[ ကြော်ငြာနေရာ - Banner Ad ]",
         loadingText: "ဒေတာဆွဲတင်နေပါသည်...",
         noBasesText: "ရွေးချယ်ထားသော Base မရှိသေးပါ။",
@@ -168,13 +210,10 @@
         successMsg: "Base အောင်မြင်စွာ တင်ပြီးပါပြီ!",
         placeholderTitle: "ဥပမာ - Anti-2 Star CWL Base",
         navHome: "Home",
-        navPost: "တင်မည်",
-        timeJustNow: "ခုနကတင်ထားသည်",
-        timeAgo: "က"
+        navPost: "တင်မည်"
       },
       en: {
         switchText: "မြန်မာစာ",
-        addBaseBtn: "Post Base",
         adPlaceholder: "[ Advertisement - Banner Ad ]",
         loadingText: "Loading layouts...",
         noBasesText: "No bases found in this filter.",
@@ -193,9 +232,7 @@
         successMsg: "Base shared successfully!",
         placeholderTitle: "e.g. Anti-2 Star CWL Base",
         navHome: "Home",
-        navPost: "Post",
-        timeJustNow: "Just now",
-        timeAgo: "ago"
+        navPost: "Post"
       }
     };
 
@@ -204,12 +241,11 @@
       const thSelect = document.getElementById('thLevel');
 
       thList.innerHTML = TH_LEVELS.map(th => `
-        <button onclick="filterByTh('TH ${th}')" class="w-full flex items-center justify-between px-3 py-2 text-xs font-semibold hover:bg-neutral-800 rounded-lg text-slate-200">
+        <button onclick="filterByTh('TH ${th}')" class="w-full flex items-center justify-between px-3 py-1.5 text-xs font-semibold hover:bg-neutral-800 rounded-lg text-slate-200">
           <div class="flex items-center gap-2">
             <span class="w-2 h-2 rounded-full bg-amber-500"></span>
             <span>TH ${th}</span>
           </div>
-          <span class="text-[10px] text-neutral-500">Level ${th}</span>
         </button>
       `).join('');
 
@@ -217,7 +253,20 @@
     }
 
     function toggleThMenu() {
+      document.getElementById('sortDropdown').classList.add('hidden');
       document.getElementById('thDropdown').classList.toggle('hidden');
+    }
+
+    function toggleSortMenu() {
+      document.getElementById('thDropdown').classList.add('hidden');
+      document.getElementById('sortDropdown').classList.toggle('hidden');
+    }
+
+    function setSort(sortType) {
+      currentSort = sortType;
+      document.getElementById('selectedSortText').innerText = sortType;
+      document.getElementById('sortDropdown').classList.add('hidden');
+      renderBases();
     }
 
     function filterByTh(th) {
@@ -227,9 +276,27 @@
       renderBases();
     }
 
-    function filterByCategory(cat) {
+    function filterByCategory(cat, btn) {
       currentFilterCat = cat;
+      document.querySelectorAll('.cat-pill').forEach(b => {
+        b.classList.remove('bg-amber-500', 'text-neutral-950');
+        b.classList.add('bg-neutral-800', 'text-slate-300');
+      });
+      btn.classList.add('bg-amber-500', 'text-neutral-950');
+      btn.classList.remove('bg-neutral-800', 'text-slate-300');
       renderBases();
+    }
+
+    function filterByCategoryDirect(cat) {
+      const targetBtn = Array.from(document.querySelectorAll('.cat-pill')).find(b => b.innerText.toUpperCase() === cat.toUpperCase());
+      if (targetBtn) filterByCategory(cat, targetBtn);
+    }
+
+    function resetHome() {
+      currentFilterTh = 'ALL';
+      document.getElementById('selectedThText').innerText = 'ALL TH';
+      const allBtn = document.querySelector('.cat-pill');
+      if (allBtn) filterByCategory('ALL', allBtn);
     }
 
     function formatTime(dateStr) {
@@ -251,12 +318,23 @@
       const grid = document.getElementById('basesGrid');
       const t = translations[currentLang];
 
-      let filtered = allBases;
+      let filtered = [...allBases];
+
+      // TH Filter
       if (currentFilterTh !== 'ALL') {
         filtered = filtered.filter(b => b.th_level === currentFilterTh);
       }
+
+      // Category Filter
       if (currentFilterCat !== 'ALL') {
-        filtered = filtered.filter(b => b.base_type === currentFilterCat);
+        filtered = filtered.filter(b => (b.base_type || '').toUpperCase() === currentFilterCat.toUpperCase());
+      }
+
+      // Sort Filter (NEW / POPULAR / ALL)
+      if (currentSort === 'NEW') {
+        filtered.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      } else if (currentSort === 'POPULAR') {
+        filtered.sort((a, b) => (b.copy_count || 0) - (a.copy_count || 0));
       }
 
       if (filtered.length === 0) {
@@ -266,23 +344,19 @@
 
       grid.innerHTML = filtered.map(b => `
         <div class="bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden shadow-lg flex flex-col">
-          <!-- Image Section -->
           <div class="relative bg-neutral-950">
             <img src="${b.image_url}" alt="${b.title}" class="w-full h-56 object-cover" onerror="this.src='https://placehold.co/600x400/1e293b/94a3b8?text=COC+Base'">
             
-            <!-- Badges -->
             <div class="absolute top-2.5 left-2.5 flex items-center gap-1.5">
               <span class="bg-amber-500 text-neutral-950 text-[11px] font-black px-2 py-0.5 rounded-md shadow">${b.th_level}</span>
               <span class="bg-neutral-900/90 text-amber-400 border border-neutral-700 text-[10px] font-bold px-2 py-0.5 rounded-md backdrop-blur-sm">${b.base_type}</span>
             </div>
           </div>
 
-          <!-- Bottom Meta & Actions -->
           <div class="p-3">
             <h3 class="font-bold text-sm mb-2.5 line-clamp-1 text-slate-100">${b.title}</h3>
             
             <div class="flex items-center justify-between text-neutral-400 text-xs border-t border-neutral-800/80 pt-2.5">
-              <!-- Stats: Copies & Time -->
               <div class="flex items-center gap-4">
                 <span class="flex items-center gap-1 font-semibold text-slate-300">
                   <i class="fa-regular fa-copy text-amber-400"></i>
@@ -294,7 +368,6 @@
                 </span>
               </div>
 
-              <!-- Copy Action -->
               <button onclick="handleCopy('${b.id}', '${b.link}', this)" class="bg-amber-500 hover:bg-amber-600 text-neutral-950 font-bold px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5 transition">
                 <i class="fa-solid fa-download"></i> <span>${t.copyBtn}</span>
               </button>
@@ -311,7 +384,6 @@
         window.open(link, '_blank');
       }
 
-      // Update Count in Database
       try {
         await db.rpc('increment_copy', { base_id: baseId });
         const countSpan = document.getElementById(`count-${baseId}`);
@@ -320,7 +392,6 @@
         console.error(err);
       }
 
-      // Button feedback
       const originalText = btn.innerHTML;
       btn.innerHTML = `<i class="fa-solid fa-check"></i> ${translations[currentLang].copied}`;
       btn.classList.replace('bg-amber-500', 'bg-emerald-500');
@@ -329,94 +400,3 @@
         btn.innerHTML = originalText;
         btn.classList.replace('bg-emerald-500', 'bg-amber-500');
         window.open(link, '_blank');
-      }, 700);
-    }
-
-    async function fetchBases() {
-      const { data, error } = await db.from('bases').select('*').order('created_at', { ascending: false });
-      if (!error && data) {
-        allBases = data;
-        renderBases();
-      }
-    }
-
-    function setLanguage(lang) {
-      currentLang = lang;
-      localStorage.setItem('site_lang', lang);
-      document.documentElement.lang = lang;
-
-      const t = translations[lang];
-      document.getElementById('langBtnText').innerText = t.switchText;
-
-      document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (t[key]) el.innerText = t[key];
-      });
-
-      document.getElementById('baseTitle').placeholder = t.placeholderTitle;
-      renderBases();
-    }
-
-    function toggleLanguage() {
-      setLanguage(currentLang === 'my' ? 'en' : 'my');
-    }
-
-    function openModal() { document.getElementById('uploadModal').classList.remove('hidden'); }
-    function closeModal() { document.getElementById('uploadModal').classList.add('hidden'); }
-
-    async function handleUpload(e) {
-      e.preventDefault();
-      const t = translations[currentLang];
-      const btn = document.getElementById('submitBtn');
-      btn.innerText = t.uploading;
-      btn.disabled = true;
-
-      try {
-        const fileInput = document.getElementById('imageFile');
-        const file = fileInput.files[0];
-        if (!file) throw new Error("ဓာတ်ပုံ ရွေးချယ်ပေးပါ");
-
-        const fileExt = file.name.split('.').pop();
-        const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
-
-        const { error: uploadError } = await db.storage.from('base-images').upload(fileName, file);
-        if (uploadError) throw uploadError;
-
-        const { data: urlData } = db.storage.from('base-images').getPublicUrl(fileName);
-
-        const title = document.getElementById('baseTitle').value;
-        const th_level = document.getElementById('thLevel').value;
-        const base_type = document.getElementById('baseType').value;
-        const link = document.getElementById('baseLink').value;
-
-        const { error: dbError } = await db.from('bases').insert([{ 
-          title, th_level, base_type, link, image_url: urlData.publicUrl, copy_count: 0
-        }]);
-
-        if (dbError) throw dbError;
-
-        alert(t.successMsg);
-        e.target.reset();
-        closeModal();
-        fetchBases();
-      } catch (err) {
-        alert(t.errorPrefix + err.message);
-      } finally {
-        btn.innerText = t.submitBtn;
-        btn.disabled = false;
-      }
-    }
-
-    // Close Dropdown when click outside
-    window.addEventListener('click', (e) => {
-      if (!e.target.closest('#thDropdown') && !e.target.closest('button[onclick="toggleThMenu()"]')) {
-        document.getElementById('thDropdown').classList.add('hidden');
-      }
-    });
-
-    initThOptions();
-    setLanguage(currentLang);
-    fetchBases();
-  </script>
-</body>
-</html>
