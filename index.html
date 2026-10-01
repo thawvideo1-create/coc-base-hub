@@ -57,7 +57,7 @@
       </div>
     </div>
 
-    <!-- Category Tabs -->
+    <!-- Category Tabs (All, War, CWL, Farming, Hybrid, Rank, Funny) -->
     <div class="max-w-md mx-auto px-3 pb-2 pt-1 flex items-center gap-1.5 overflow-x-auto no-scrollbar text-xs font-bold">
       <button type="button" onclick="filterByCategory('ALL', this)" class="cat-pill px-3 py-1 rounded-lg bg-amber-500 text-neutral-950 whitespace-nowrap">All</button>
       <button type="button" onclick="filterByCategory('WAR', this)" class="cat-pill px-3 py-1 rounded-lg bg-neutral-800 text-slate-300 whitespace-nowrap">War</button>
@@ -155,8 +155,8 @@
   </div>
 
   <script>
-    const SUPABASE_URL = "https://jzsodpshhihelemowzvn.supabase.co";
-    // စာလုံးသေး eyJ ဖြင့် အမှန်ထည့်ထားပါသည်
+    // Cloudflare Worker Proxy URL ဖြင့် အစားထိုးထားပြီးဖြစ်ပါသည် (VPN မလိုပါ)
+    const SUPABASE_URL = "https://orange-sun-6c0d.thawzinlatt-tt.workers.dev";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp6c29kcHNoaGloZWxlbW93enZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA4MjkwNDQsImV4cCI6MjEwNjQwNTA0NH0.x-gP_4a4rcKAjAhNgtegDlq8XD542Y3ufH54J6FVWlo";
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -255,6 +255,12 @@
       return `${diffDay}d ${isMm ? "က" : "ago"}`;
     }
 
+    // Proxy မှတစ်ဆင့် ပုံများကို မြန်မာပြည်တွင်းမှ တိုက်ရိုက်ဆွဲယူရန် URL ပြောင်းလဲပေးသည့် function
+    function getProxiedImageUrl(originalUrl) {
+      if (!originalUrl) return 'https://placehold.co/600x400/1e293b/94a3b8?text=COC+Base';
+      return originalUrl.replace('https://jzsodpshhihelemowzvn.supabase.co', SUPABASE_URL);
+    }
+
     function renderBases() {
       const grid = document.getElementById('basesGrid');
       const t = translations[currentLang];
@@ -271,7 +277,7 @@
         filtered = filtered.filter(b => (b.base_type || '').toString().trim().toUpperCase() === currentFilterCat.trim().toUpperCase());
       }
 
-      // Sorting (NEW / POPULAR / ALL)
+      // Sort Filter (NEW / POPULAR / ALL)
       if (currentSort === 'NEW') {
         filtered.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
       } else if (currentSort === 'POPULAR') {
@@ -286,7 +292,7 @@
       grid.innerHTML = filtered.map(b => `
         <div class="bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden shadow-lg flex flex-col">
           <div class="relative bg-neutral-950">
-            <img src="${b.image_url}" alt="${b.title || 'COC Base'}" class="w-full h-56 object-cover" onerror="this.src='https://placehold.co/600x400/1e293b/94a3b8?text=COC+Base'">
+            <img src="${getProxiedImageUrl(b.image_url)}" alt="${b.title || 'COC Base'}" class="w-full h-56 object-cover" onerror="this.src='https://placehold.co/600x400/1e293b/94a3b8?text=COC+Base'">
             <div class="absolute top-2.5 left-2.5 flex items-center gap-1.5">
               <span class="bg-amber-500 text-neutral-950 text-[11px] font-black px-2 py-0.5 rounded-md shadow">${b.th_level || 'TH'}</span>
               <span class="bg-neutral-900/90 text-amber-400 border border-neutral-700 text-[10px] font-bold px-2 py-0.5 rounded-md backdrop-blur-sm">${b.base_type || 'WAR'}</span>
@@ -420,16 +426,4 @@
         closeModal();
         fetchBases();
       } catch (err) {
-        alert(t.errorPrefix + err.message);
-      } finally {
-        btn.innerText = t.submitBtn;
-        btn.disabled = false;
-      }
-    }
-
-    // Run Initial
-    setLanguage(currentLang);
-    fetchBases();
-  </script>
-</body>
-</html>
+        alert(t.
