@@ -6,13 +6,12 @@
   <title>ClashBase Hub - Professional COC Layouts</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
-<body class="bg-neutral-950 text-slate-100 min-h-screen pb-16 select-none">
+<body class="bg-neutral-950 text-slate-100 min-h-screen pb-20 select-none">
 
   <!-- Header -->
   <header class="sticky top-0 z-40 bg-neutral-900/95 backdrop-blur-md border-b border-neutral-800">
@@ -28,14 +27,14 @@
           <span id="langBtnText">English</span>
         </button>
 
-        <!-- Sort Native Select -->
+        <!-- Sort Select (NEW / POPULAR / ALL) -->
         <select id="sortSelect" onchange="changeSort(this.value)" class="bg-neutral-800 text-amber-400 text-xs font-bold px-2 py-1 rounded-lg border border-neutral-700 focus:outline-none">
           <option value="NEW">⚡ NEW</option>
           <option value="POPULAR">🔥 POPULAR</option>
           <option value="ALL">📦 ALL</option>
         </select>
 
-        <!-- TH Native Select Dropdown -->
+        <!-- TH Select Dropdown -->
         <select id="thFilterSelect" onchange="changeTh(this.value)" class="bg-neutral-800 text-amber-400 text-xs font-bold px-2 py-1 rounded-lg border border-neutral-700 focus:outline-none">
           <option value="ALL">ALL TH</option>
           <option value="TH 18">TH 18</option>
@@ -83,7 +82,7 @@
     </div>
   </main>
 
-  <!-- Floating Button (+ Post Base) -->
+  <!-- Floating Action Button (+ Post Base) -->
   <button type="button" onclick="openModal()" class="fixed bottom-6 right-4 z-40 bg-emerald-500 hover:bg-emerald-600 text-neutral-950 w-14 h-14 rounded-full shadow-2xl flex items-center justify-center text-2xl transition transform active:scale-95 border-2 border-emerald-400/40 cursor-pointer">
     <i class="fa-solid fa-plus font-black"></i>
   </button>
@@ -155,10 +154,9 @@
   </div>
 
   <script>
-    // Cloudflare Worker Proxy URL ဖြင့် အစားထိုးထားပြီးဖြစ်ပါသည် (VPN မလိုပါ)
-    const SUPABASE_URL = "https://orange-sun-6c0d.thawzinlatt-tt.workers.dev";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp6c29kcHNoaGloZWxlbW93enZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA4MjkwNDQsImV4cCI6MjEwNjQwNTA0NH0.x-gP_4a4rcKAjAhNgtegDlq8XD542Y3ufH54J6FVWlo";
-    const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // Cloudflare Worker Proxy URL (မြန်မာပြည်တွင်းမှ တိုက်ရိုက်အလုပ်လုပ်သည်)
+    const PROXY_URL = "https://orange-sun-6c0d.thawzinlatt-tt.workers.dev";
+    const API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp6c29kcHNoaGloZWxlbW93enZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA4MjkwNDQsImV4cCI6MjEwNjQwNTA0NH0.x-gP_4a4rcKAjAhNgtegDlq8XD542Y3ufH54J6FVWlo";
 
     let allBases = [];
     let currentFilterTh = 'ALL';
@@ -255,10 +253,9 @@
       return `${diffDay}d ${isMm ? "က" : "ago"}`;
     }
 
-    // Proxy မှတစ်ဆင့် ပုံများကို မြန်မာပြည်တွင်းမှ တိုက်ရိုက်ဆွဲယူရန် URL ပြောင်းလဲပေးသည့် function
-    function getProxiedImageUrl(originalUrl) {
+    function getImageUrl(originalUrl) {
       if (!originalUrl) return 'https://placehold.co/600x400/1e293b/94a3b8?text=COC+Base';
-      return originalUrl.replace('https://jzsodpshhihelemowzvn.supabase.co', SUPABASE_URL);
+      return originalUrl.replace('https://jzsodpshhihelemowzvn.supabase.co', PROXY_URL);
     }
 
     function renderBases() {
@@ -292,7 +289,7 @@
       grid.innerHTML = filtered.map(b => `
         <div class="bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden shadow-lg flex flex-col">
           <div class="relative bg-neutral-950">
-            <img src="${getProxiedImageUrl(b.image_url)}" alt="${b.title || 'COC Base'}" class="w-full h-56 object-cover" onerror="this.src='https://placehold.co/600x400/1e293b/94a3b8?text=COC+Base'">
+            <img src="${getImageUrl(b.image_url)}" alt="${b.title || 'COC Base'}" class="w-full h-56 object-cover" onerror="this.src='https://placehold.co/600x400/1e293b/94a3b8?text=COC+Base'">
             <div class="absolute top-2.5 left-2.5 flex items-center gap-1.5">
               <span class="bg-amber-500 text-neutral-950 text-[11px] font-black px-2 py-0.5 rounded-md shadow">${b.th_level || 'TH'}</span>
               <span class="bg-neutral-900/90 text-amber-400 border border-neutral-700 text-[10px] font-bold px-2 py-0.5 rounded-md backdrop-blur-sm">${b.base_type || 'WAR'}</span>
@@ -329,9 +326,16 @@
         window.open(link, '_blank');
       }
 
-      try {
-        await db.rpc('increment_copy', { base_id: baseId });
-      } catch (err) {}
+      // Increment count via proxy API
+      fetch(`${PROXY_URL}/rest/v1/rpc/increment_copy`, {
+        method: 'POST',
+        headers: {
+          'apikey': API_KEY,
+          'Authorization': `Bearer ${API_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ base_id: Number(baseId) })
+      }).catch(() => {});
 
       const countSpan = document.getElementById(`count-${baseId}`);
       if (countSpan) countSpan.innerText = parseInt(countSpan.innerText || 0) + 1;
@@ -347,13 +351,25 @@
       }, 500);
     }
 
+    // Direct Native Fetch (No jsdelivr library needed!)
     async function fetchBases() {
       try {
-        const { data, error } = await db.from('bases').select('*');
-        if (error) throw error;
-        allBases = data || [];
+        const res = await fetch(`${PROXY_URL}/rest/v1/bases?select=*&order=created_at.desc`, {
+          headers: {
+            'apikey': API_KEY,
+            'Authorization': `Bearer ${API_KEY}`
+          }
+        });
+        
+        if (!res.ok) {
+          throw new Error(`Server status: ${res.status}`);
+        }
+
+        const data = await res.json();
+        allBases = Array.isArray(data) ? data : [];
         renderBases();
       } catch (err) {
+        console.error(err);
         document.getElementById('basesGrid').innerHTML = `
           <div class="text-rose-400 text-xs py-8 px-4 text-center border border-rose-900/50 bg-rose-950/20 rounded-xl">
             ဒေတာရယူရာတွင် အမှားဖြစ်သွားပါသည်: <br>${err.message}
@@ -405,25 +421,19 @@
         const fileExt = file.name.split('.').pop();
         const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
 
-        const { error: uploadError } = await db.storage.from('base-images').upload(fileName, file);
-        if (uploadError) throw uploadError;
+        // Upload directly via Proxy Storage API
+        const uploadRes = await fetch(`${PROXY_URL}/storage/v1/object/base-images/${fileName}`, {
+          method: 'POST',
+          headers: {
+            'apikey': API_KEY,
+            'Authorization': `Bearer ${API_KEY}`,
+            'Content-Type': file.type || 'image/jpeg'
+          },
+          body: file
+        });
 
-        const { data: urlData } = db.storage.from('base-images').getPublicUrl(fileName);
+        if (!uploadRes.ok) {
+          throw new Error("ဓာတ်ပုံ တင်မရပါ");
+        }
 
-        const title = document.getElementById('baseTitle').value;
-        const th_level = document.getElementById('thLevel').value;
-        const base_type = document.getElementById('baseType').value;
-        const link = document.getElementById('baseLink').value;
-
-        const { error: dbError } = await db.from('bases').insert([{ 
-          title, th_level, base_type, link, image_url: urlData.publicUrl, copy_count: 0
-        }]);
-
-        if (dbError) throw dbError;
-
-        alert(t.successMsg);
-        e.target.reset();
-        closeModal();
-        fetchBases();
-      } catch (err) {
-        alert(t.
+        const publicImage
