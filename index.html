@@ -5,30 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>ClashBase Hub - Professional COC Layouts</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background-color: #0a0a0a; color: #f8fafc; padding-bottom: 95px; }
     
-    /* Header */
-    header { position: sticky; top: 0; z-index: 40; background-color: rgba(23, 23, 23, 0.95); border-bottom: 1px solid #262626; backdrop-filter: blur(8px); }
-    .header-top { max-width: 480px; margin: 0 auto; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; gap: 6px; }
-    .logo { font-size: 19px; font-weight: 800; color: #f59e0b; cursor: pointer; display: flex; align-items: center; gap: 6px; }
-    .logo svg { width: 22px; height: 22px; fill: #f59e0b; }
+    header { position: sticky; top: 0; z-index: 40; background-color: #171717; border-bottom: 1px solid #262626; }
+    .header-top { max-width: 480px; margin: 0 auto; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; }
+    .logo { font-size: 19px; font-weight: 800; color: #f59e0b; cursor: pointer; }
     .controls { display: flex; align-items: center; gap: 6px; }
     
-    .btn-lang { background: #262626; color: #f59e0b; border: 1px solid #404040; padding: 6px 9px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; }
-    .select-box { background: #262626; color: #f59e0b; border: 1px solid #404040; padding: 6px 7px; border-radius: 6px; font-size: 11px; font-weight: bold; outline: none; cursor: pointer; }
+    .btn-lang { background: #262626; color: #f59e0b; border: 1px solid #404040; padding: 6px 10px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; }
+    .select-box { background: #262626; color: #f59e0b; border: 1px solid #404040; padding: 6px 8px; border-radius: 6px; font-size: 12px; font-weight: bold; outline: none; cursor: pointer; }
     
-    /* Category Scroll */
-    .cat-bar { max-width: 480px; margin: 0 auto; padding: 4px 12px 10px; display: flex; gap: 6px; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; }
+    .cat-bar { max-width: 480px; margin: 0 auto; padding: 6px 12px 10px; display: flex; gap: 6px; overflow-x: auto; white-space: nowrap; }
     .cat-bar::-webkit-scrollbar { display: none; }
     .cat-btn { background: #262626; color: #cbd5e1; border: none; padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; }
     .cat-btn.active { background: #f59e0b; color: #0a0a0a; }
 
-    /* Ad Banner */
     .ad-box { max-width: 480px; margin: 10px auto 4px; padding: 0 14px; }
-    .ad-inner { width: 100%; height: 48px; border: 1px dashed #334155; background: #171717; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #64748b; }
+    .ad-inner { width: 100%; height: 45px; border: 1px dashed #334155; background: #171717; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #64748b; }
 
-    /* Layout Cards */
     .feed { max-width: 480px; margin: 0 auto; padding: 10px 14px; display: flex; flex-direction: column; gap: 16px; }
     .card { background: #171717; border: 1px solid #262626; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; }
     .img-wrap { position: relative; width: 100%; height: 215px; background: #000; }
@@ -37,26 +32,19 @@
     .badge-cat { position: absolute; top: 10px; left: 66px; background: rgba(0,0,0,0.85); color: #f59e0b; border: 1px solid #404040; font-size: 10px; font-weight: bold; padding: 3px 7px; border-radius: 6px; }
     
     .card-body { padding: 14px 12px; }
-    .card-title { font-size: 15px; font-weight: 700; color: #f8fafc; margin-bottom: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .card-title { font-size: 15px; font-weight: 700; color: #f8fafc; margin-bottom: 12px; }
     .card-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #262626; padding-top: 12px; }
     
-    /* Meta Info */
     .meta-info { display: flex; gap: 16px; align-items: center; font-size: 13.5px; color: #cbd5e1; }
-    .meta-item { display: flex; align-items: center; gap: 5px; font-weight: 600; }
-    .meta-item svg { width: 15px; height: 15px; fill: #f59e0b; }
-    .meta-time { display: flex; align-items: center; gap: 5px; color: #94a3b8; font-size: 13px; font-weight: 500; }
-    .meta-time svg { width: 14px; height: 14px; fill: #94a3b8; }
+    .meta-item { display: flex; align-items: center; gap: 5px; font-weight: 600; color: #f59e0b; }
+    .meta-time { display: flex; align-items: center; gap: 5px; color: #94a3b8; font-size: 13px; }
 
-    /* Copy Button */
-    .btn-copy { background: #f59e0b; color: #0a0a0a; border: none; padding: 8px 16px; border-radius: 9px; font-size: 13.5px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+    .btn-copy { background: #f59e0b; color: #0a0a0a; border: none; padding: 8px 16px; border-radius: 9px; font-size: 13.5px; font-weight: 800; cursor: pointer; }
     .btn-copy:active { transform: scale(0.96); }
-    .btn-copy svg { width: 15px; height: 15px; fill: currentColor; }
-    .btn-copy.done { background: #10b981; color: #fff; }
 
     /* Floating Add Button */
-    .fab { position: fixed; bottom: 24px; right: 18px; width: 56px; height: 56px; background: #10b981; border: 2px solid #34d399; border-radius: 50%; color: #000; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(0,0,0,0.6); cursor: pointer; z-index: 50; }
-    .fab svg { width: 26px; height: 26px; fill: #000; }
-    .fab:active { transform: scale(0.94); }
+    .fab { position: fixed; bottom: 24px; right: 18px; width: 56px; height: 56px; background: #10b981; border: 2px solid #34d399; border-radius: 50%; color: #000; font-size: 32px; font-weight: bold; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(0,0,0,0.6); cursor: pointer; z-index: 50; }
+    .fab:active { transform: scale(0.92); }
 
     /* Modal */
     .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; padding: 16px; z-index: 60; }
@@ -64,7 +52,7 @@
     .modal-box { background: #171717; border: 1px solid #262626; border-radius: 16px; width: 100%; max-width: 440px; padding: 18px; max-height: 90vh; overflow-y: auto; }
     .modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
     .modal-head h2 { font-size: 16px; font-weight: bold; color: #f59e0b; }
-    .modal-close { background: none; border: none; font-size: 24px; color: #94a3b8; cursor: pointer; line-height: 1; padding: 4px; }
+    .modal-close { background: none; border: none; font-size: 26px; color: #94a3b8; cursor: pointer; line-height: 1; padding: 4px; }
 
     .form-group { margin-bottom: 12px; }
     .form-group label { display: block; font-size: 12px; color: #94a3b8; margin-bottom: 4px; }
@@ -82,10 +70,7 @@
   <!-- Header -->
   <header>
     <div class="header-top">
-      <div class="logo" onclick="resetHome()">
-        <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 2.18l7 3.12v4.7c0 4.54-3.14 8.78-7 9.88-3.86-1.1-7-5.34-7-9.88V6.3l7-3.12z"/></svg>
-        ClashBase
-      </div>
+      <div class="logo" onclick="resetHome()">ClashBase</div>
       <div class="controls">
         <button type="button" class="btn-lang" id="langToggle" onclick="toggleLanguage()">English</button>
         <select class="select-box" id="sortFilter" onchange="renderFeed()">
@@ -130,9 +115,7 @@
   </main>
 
   <!-- Floating Add Button -->
-  <button type="button" class="fab" onclick="openModal()">
-    <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-  </button>
+  <button type="button" class="fab" onclick="openModal()">+</button>
 
   <!-- Upload Modal -->
   <div class="modal" id="modalWindow">
@@ -198,7 +181,7 @@
     var isBurmese = true;
     var allBases = [];
 
-    // Local Data
+    // Local Storage Backup
     try {
       var cached = localStorage.getItem('stored_coc_bases');
       if (cached) {
@@ -206,11 +189,6 @@
         if (Array.isArray(parsed)) allBases = parsed;
       }
     } catch(e) {}
-
-    // Inline Icons SVG
-    var copySvg = '<svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>';
-    var clockSvg = '<svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>';
-    var downloadSvg = '<svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>';
 
     function openModal() {
       document.getElementById('modalWindow').classList.add('show');
@@ -314,12 +292,10 @@
             '<div class="card-title">' + b.title + '</div>' +
             '<div class="card-footer">' +
               '<div class="meta-info">' +
-                '<span class="meta-item">' + copySvg + ' <b class="copy-cnt">' + (b.copy_count || b.copies || 0) + '</b></span>' +
-                '<span class="meta-time">' + clockSvg + ' <span class="time-val">' + formatTime(b.created_at) + '</span></span>' +
+                '<span class="meta-item">Copy: <b class="copy-cnt">' + (b.copy_count || b.copies || 0) + '</b></span>' +
+                '<span class="meta-time">Time: <span class="time-val">' + formatTime(b.created_at) + '</span></span>' +
               '</div>' +
-              '<button type="button" class="btn-copy" data-id="' + b.id + '" data-link="' + b.link + '" onclick="handleCopyBtn(this)">' +
-                downloadSvg + ' <span class="copy-txt">Copy Layout</span>' +
-              '</button>' +
+              '<button type="button" class="btn-copy" data-id="' + b.id + '" data-link="' + b.link + '" onclick="handleCopyBtn(this)">Copy Layout</button>' +
             '</div>' +
           '</div>' +
         '</div>';
@@ -347,6 +323,7 @@
         if (cnt) cnt.innerText = parseInt(cnt.innerText || 0) + 1;
       }
 
+      // Increment online count
       fetch(PROXY_URL + '/rest/v1/rpc/increment_copy', {
         method: 'POST',
         headers: { 'apikey': API_KEY, 'Authorization': 'Bearer ' + API_KEY, 'Content-Type': 'application/json' },
@@ -357,15 +334,11 @@
         navigator.clipboard.writeText(cleanLink).catch(function() {});
       }
 
-      var txtSpan = btn.querySelector('.copy-txt');
-      if (txtSpan) txtSpan.innerText = "Copied!";
-      btn.classList.add('done');
-
+      btn.innerText = "Copied!";
       window.location.href = cleanLink;
 
       setTimeout(function() {
-        btn.classList.remove('done');
-        if (txtSpan) txtSpan.innerText = "Copy Layout";
+        btn.innerText = "Copy Layout";
       }, 2000);
     }
 
@@ -389,4 +362,54 @@
 
           var base64Url = canvas.toDataURL('image/jpeg', 0.65);
           canvas.toBlob(function(blob) {
-            callback(blob
+            callback(blob, base64Url);
+          }, 'image/jpeg', 0.65);
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      var title = document.getElementById('newTitle').value.trim();
+      var th = document.getElementById('newTh').value;
+      var cat = document.getElementById('newCat').value;
+      var link = document.getElementById('newLink').value.trim();
+      var file = document.getElementById('newFile').files[0];
+      var submitBtn = document.getElementById('submitAddModal');
+
+      if (!file) {
+        alert("ဓာတ်ပုံ ရွေးချယ်ပေးပါ");
+        return;
+      }
+
+      submitBtn.innerText = isBurmese ? "တင်နေပါသည်..." : "Uploading...";
+      submitBtn.disabled = true;
+
+      compressImageFile(file, function(blob, base64Url) {
+        var fileName = Date.now() + '_' + Math.random().toString(36).substring(7) + '.jpg';
+
+        // 1. Upload to Supabase Storage via Proxy
+        fetch(PROXY_URL + '/storage/v1/object/base-images/' + fileName, {
+          method: 'POST',
+          headers: {
+            'apikey': API_KEY,
+            'Authorization': 'Bearer ' + API_KEY,
+            'Content-Type': 'image/jpeg'
+          },
+          body: blob
+        })
+        .then(function(uploadRes) {
+          var publicUrl = uploadRes.ok ? (PROXY_URL + '/storage/v1/object/public/base-images/' + fileName) : base64Url;
+
+          // 2. Insert to Supabase DB via Proxy
+          return fetch(PROXY_URL + '/rest/v1/bases', {
+            method: 'POST',
+            headers: {
+              'apikey': API_KEY,
+              'Authorization': 'Bearer ' + API_KEY,
+              'Content-Type': 'application/json',
+              'Prefer': 'return=representation'
+            },
+ 
