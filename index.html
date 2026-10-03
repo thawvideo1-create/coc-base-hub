@@ -41,7 +41,7 @@
     .card-title { font-size: 15px; font-weight: 700; color: #f8fafc; margin-bottom: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .card-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #262626; padding-top: 12px; }
     
-    /* Meta Info (Icon, Counts, Time) */
+    /* Meta Info */
     .meta-info { display: flex; gap: 16px; align-items: center; font-size: 13.5px; color: #cbd5e1; }
     .meta-item { display: flex; align-items: center; gap: 5px; font-weight: 600; }
     .meta-item i { color: #f59e0b; font-size: 14px; }
@@ -187,35 +187,44 @@
   </div>
 
   <script>
+    // Supabase & Cloudflare Proxy Config
+    var PROXY_URL = "https://orange-sun-6c0d.thawzinlatt-tt.workers.dev";
+    var API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp6c29kcHNoaGloZWxlbW93enZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA4MjkwNDQsImV4cCI6MjEwNjQwNTA0NH0.x-gP_4a4rcKAjAhNgtegDlq8XD542Y3ufH54J6FVWlo";
+
     var activeTh = 'ALL';
     var activeCat = 'ALL';
     var isBurmese = true;
+    var allBases = [];
 
-    function getStoredBases() {
-      try {
-        var data = localStorage.getItem('stored_coc_bases');
-        if (data) {
-          var parsed = JSON.parse(data);
-          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-        }
-      } catch(e) {}
-      return [];
+    // အချိန်တွက်ချက်ပြသပေးသည့် function
+    function formatTime(dateStr) {
+      if (!dateStr) return isBurmese ? "ခုနက" : "Just now";
+      var d = new Date(dateStr);
+      var now = new Date();
+      var diffSec = Math.max(0, Math.floor((now - d) / 1000));
+      if (diffSec < 60) return isBurmese ? "ခုနက" : "Just now";
+      var diffMin = Math.floor(diffSec / 60);
+      if (diffMin < 60) return diffMin + "m " + (isBurmese ? "က" : "ago");
+      var diffHr = Math.floor(diffMin / 60);
+      if (diffHr < 24) return diffHr + "h " + (isBurmese ? "က" : "ago");
+      var diffDay = Math.floor(diffHr / 24);
+      return diffDay + "d " + (isBurmese ? "က" : "ago");
     }
-
-    var allBases = getStoredBases();
 
     function renderFeed() {
       var container = document.getElementById('feedContainer');
       var sortMode = document.getElementById('sortFilter').value;
 
       var filtered = allBases.filter(function(b) {
-        var matchTh = (activeTh === 'ALL' || b.th === activeTh);
-        var matchCat = (activeCat === 'ALL' || b.cat === activeCat);
+        var matchTh = (activeTh === 'ALL' || (b.th_level || '').toUpperCase() === activeTh);
+        var matchCat = (activeCat === 'ALL' || (b.base_type || '').toUpperCase() === activeCat);
         return matchTh && matchCat;
       });
 
       if (sortMode === 'POPULAR') {
-        filtered.sort(function(a, b) { return (b.copies || 0) - (a.copies || 0); });
+        filtered.sort(function(a, b) { return (Number(b.copy_count) || 0) - (Number(a.copy_count) || 0); });
+      } else {
+        filtered.sort(function(a, b) { return new Date(b.created_at || 0) - new Date(a.created_at || 0); });
       }
 
       if (filtered.length === 0) {
@@ -226,18 +235,20 @@
       var html = '';
       for (var i = 0; i < filtered.length; i++) {
         var b = filtered[i];
+        var imgUrl = b.image_url ? b.image_url.replace('https://jzsodpshhihelemowzvn.supabase.co', PROXY_URL) : 'https://placehold.co/600x400/1e293b/94a3b8?text=COC+Base';
+
         html += '<div class="card">' +
           '<div class="img-wrap">' +
-            '<img src="' + b.img + '" alt="Base">' +
-            '<span class="badge-th">' + b.th + '</span>' +
-            '<span class="badge-cat">' + b.cat + '</span>' +
+            '<img src="' + imgUrl + '" alt="Base" onerror="this.src=\'https://placehold.co/600x400/1e293b/94a3b8?text=COC+Base\'">' +
+            '<span class="badge-th">' + (b.th_level || 'TH') + '</span>' +
+            '<span class="badge-cat">' + (b.base_type || 'WAR') + '</span>' +
           '</div>' +
           '<div class="card-body">' +
-            '<div class="card-title">' + b.title + '</div>' +
+            '<div class="card-title">' + (b.title || 'Untitled Base') + '</div>' +
             '<div class="card-footer">' +
               '<div class="meta-info">' +
-                '<span class="meta-item"><i class="fa-regular fa-copy"></i> <b class="copy-cnt">' + (b.copies || 0) + '</b></span>' +
-                '<span class="meta-time"><i class="fa-regular fa-clock"></i> <span class="time-val">' + b.time + '</span></span>' +
+                '<span class="meta-item"><i class="fa-regular fa-copy"></i> <b class="copy-cnt">' + (b.copy_count || 0) + '</b></span>' +
+                '<span class="meta-time"><i class="fa-regular fa-clock"></i> <span class="time-val">' + formatTime(b.created_at) + '</span></span>' +
               '</div>' +
               '<button type="button" class="btn-copy" data-id="' + b.id + '" data-link="' + b.link + '" onclick="handleCopyBtn(this)">' +
                 '<i class="fa-solid fa-download"></i> <span class="copy-txt">Copy Layout</span>' +
@@ -249,7 +260,27 @@
       container.innerHTML = html;
     }
 
-    // Category Tabs
+    // ဆာဗာမှ လူတိုင်းတင်ထားသော Base အချက်အလက်များ တိုက်ရိုက်ဆွဲယူခြင်း
+    function fetchAllBases() {
+      fetch(PROXY_URL + '/rest/v1/bases?select=*&order=created_at.desc', {
+        headers: {
+          'apikey': API_KEY,
+          'Authorization': 'Bearer ' + API_KEY
+        }
+      })
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        if (Array.isArray(data)) {
+          allBases = data;
+          renderFeed();
+        }
+      })
+      .catch(function(err) {
+        console.error("Fetch bases error:", err);
+      });
+    }
+
+    // Category Tabs Event
     var catButtons = document.querySelectorAll('.cat-btn');
     for (var i = 0; i < catButtons.length; i++) {
       catButtons[i].onclick = function() {
@@ -272,7 +303,7 @@
       renderFeed();
     };
 
-    // Language Toggle
+    // Language Switcher
     document.getElementById('langToggle').onclick = function() {
       isBurmese = !isBurmese;
       this.innerText = isBurmese ? "English" : "မြန်မာစာ";
@@ -288,7 +319,7 @@
       renderFeed();
     };
 
-    // Copy Layout Action (COC Game တိုက်ရိုက်ပွင့်ခြင်း)
+    // Copy Layout Action (COC Game တိုက်ရိုက်ပွင့်ခြင်း & ဆာဗာတွင် Copy count တိုးခြင်း)
     window.handleCopyBtn = function(btn) {
       var link = btn.getAttribute('data-link');
       var id = btn.getAttribute('data-id');
@@ -296,15 +327,16 @@
 
       var cleanLink = link.trim();
 
-      for (var i = 0; i < allBases.length; i++) {
-        if (String(allBases[i].id) === String(id)) {
-          allBases[i].copies = (allBases[i].copies || 0) + 1;
-          break;
-        }
-      }
-      try {
-        localStorage.setItem('stored_coc_bases', JSON.stringify(allBases));
-      } catch(e) {}
+      // ဆာဗာတွင် copy_count ကို အလိုအလျောက် +1 တိုးစေခြင်း
+      fetch(PROXY_URL + '/rest/v1/rpc/increment_copy', {
+        method: 'POST',
+        headers: {
+          'apikey': API_KEY,
+          'Authorization': 'Bearer ' + API_KEY,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ base_id: Number(id) })
+      }).catch(function() {});
 
       var card = btn.closest('.card');
       if (card) {
@@ -336,14 +368,14 @@
     document.getElementById('closeAddModal').onclick = closeModal;
     document.getElementById('cancelAddModal').onclick = closeModal;
 
-    // Canvas Compression
-    function compressImage(file, callback) {
+    // ဓာတ်ပုံအရွယ်အစားကို ပေါ့ပါးသွားအောင် အလိုအလျောက်ချုံ့ပြီး Blob ပြုလုပ်ပေးသည့် function
+    function compressImageBlob(file, callback) {
       var reader = new FileReader();
       reader.onload = function(e) {
         var img = new Image();
         img.onload = function() {
           var canvas = document.createElement('canvas');
-          var maxWidth = 640;
+          var maxWidth = 800;
           var width = img.width;
           var height = img.height;
 
@@ -357,62 +389,18 @@
           var ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, width, height);
 
-          var dataUrl = canvas.toDataURL('image/jpeg', 0.65);
-          callback(dataUrl);
+          canvas.toBlob(function(blob) {
+            callback(blob);
+          }, 'image/jpeg', 0.7);
         };
         img.src = e.target.result;
       };
       reader.readAsDataURL(file);
     }
 
-    // Submit New Base
+    // ဆာဗာသို့ Base တင်ခြင်း (Online Database သို့ လူတိုင်းမြင်နိုင်ရန် ပို့ခြင်း)
     document.getElementById('newPostForm').onsubmit = function(e) {
       e.preventDefault();
       var title = document.getElementById('newTitle').value.trim();
       var th = document.getElementById('newTh').value;
-      var cat = document.getElementById('newCat').value;
-      var link = document.getElementById('newLink').value.trim();
-      var file = document.getElementById('newFile').files[0];
-      var submitBtn = document.getElementById('submitAddModal');
-
-      if (!file) {
-        alert("ဓာတ်ပုံ ရွေးချယ်ပေးပါ");
-        return;
-      }
-
-      submitBtn.innerText = isBurmese ? "တင်နေပါသည်..." : "Uploading...";
-      submitBtn.disabled = true;
-
-      compressImage(file, function(compressedDataUrl) {
-        var newBaseItem = {
-          id: Date.now(),
-          title: title,
-          th: th,
-          cat: cat,
-          copies: 0,
-          link: link,
-          img: compressedDataUrl,
-          time: isBurmese ? "ခုနက" : "Just now"
-        };
-
-        allBases.unshift(newBaseItem);
-
-        try {
-          localStorage.setItem('stored_coc_bases', JSON.stringify(allBases));
-        } catch(err) {
-          console.warn("Storage full", err);
-        }
-
-        alert(isBurmese ? "Base တင်ခြင်း အောင်မြင်ပါသည်!" : "Base uploaded successfully!");
-        document.getElementById('newPostForm').reset();
-        submitBtn.innerText = isBurmese ? "တင်မည်" : "Publish";
-        submitBtn.disabled = false;
-        closeModal();
-        renderFeed();
-      });
-    };
-
-    renderFeed();
-  </script>
-</body>
-</html>
+      var cat = do
