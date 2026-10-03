@@ -74,7 +74,7 @@
     .modal-btns { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
     .btn-cancel { background: #262626; color: #fff; border: none; padding: 8px 14px; border-radius: 8px; font-size: 12px; cursor: pointer; }
     .btn-submit { background: #f59e0b; color: #000; border: none; padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; }
-    .no-bases-hint { text-align: center; color: #94a3b8; font-size: 13px; padding: 30px 0; }
+    .status-hint { text-align: center; color: #94a3b8; font-size: 13px; padding: 30px 0; }
   </style>
 </head>
 <body>
@@ -124,7 +124,9 @@
   </div>
 
   <!-- Feed Container -->
-  <main class="feed" id="feedContainer"></main>
+  <main class="feed" id="feedContainer">
+    <div class="status-hint" id="feedStatus">ဒေတာဆွဲတင်နေပါသည်...</div>
+  </main>
 
   <!-- Floating Add Button -->
   <button type="button" class="fab" id="openAddModal">
@@ -187,7 +189,6 @@
   </div>
 
   <script>
-    // Supabase & Cloudflare Proxy Config
     var PROXY_URL = "https://orange-sun-6c0d.thawzinlatt-tt.workers.dev";
     var API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp6c29kcHNoaGloZWxlbW93enZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA4MjkwNDQsImV4cCI6MjEwNjQwNTA0NH0.x-gP_4a4rcKAjAhNgtegDlq8XD542Y3ufH54J6FVWlo";
 
@@ -196,7 +197,15 @@
     var isBurmese = true;
     var allBases = [];
 
-    // အချိန်တွက်ချက်ပြသပေးသည့် function
+    // Local Storage မှ အရန်ဒေတာများ ဖတ်ယူခြင်း
+    try {
+      var cached = localStorage.getItem('stored_coc_bases');
+      if (cached) {
+        var parsed = JSON.parse(cached);
+        if (Array.isArray(parsed)) allBases = parsed;
+      }
+    } catch(e) {}
+
     function formatTime(dateStr) {
       if (!dateStr) return isBurmese ? "ခုနက" : "Just now";
       var d = new Date(dateStr);
@@ -216,38 +225,41 @@
       var sortMode = document.getElementById('sortFilter').value;
 
       var filtered = allBases.filter(function(b) {
-        var matchTh = (activeTh === 'ALL' || (b.th_level || '').toUpperCase() === activeTh);
-        var matchCat = (activeCat === 'ALL' || (b.base_type || '').toUpperCase() === activeCat);
+        var matchTh = (activeTh === 'ALL' || (b.th_level || b.th || '').toUpperCase() === activeTh);
+        var matchCat = (activeCat === 'ALL' || (b.base_type || b.cat || '').toUpperCase() === activeCat);
         return matchTh && matchCat;
       });
 
       if (sortMode === 'POPULAR') {
-        filtered.sort(function(a, b) { return (Number(b.copy_count) || 0) - (Number(a.copy_count) || 0); });
+        filtered.sort(function(a, b) { return (Number(b.copy_count || b.copies) || 0) - (Number(a.copy_count || a.copies) || 0); });
       } else {
-        filtered.sort(function(a, b) { return new Date(b.created_at || 0) - new Date(a.created_at || 0); });
+        filtered.sort(function(a, b) { return new Date(b.created_at || b.id || 0) - new Date(a.created_at || a.id || 0); });
       }
 
       if (filtered.length === 0) {
-        container.innerHTML = '<div class="no-bases-hint">' + (isBurmese ? 'တင်ထားသော Base မရှိသေးပါ။ အောက်က + ခလုတ်ကို နှိပ်၍ Base အသစ် တင်နိုင်ပါသည်ခင်ဗျာ။' : 'No bases yet. Click + button to upload a base.') + '</div>';
+        container.innerHTML = '<div class="status-hint">' + (isBurmese ? 'တင်ထားသော Base မရှိသေးပါ။ အောက်က + ခလုတ်ကို နှိပ်၍ စတင်တင်နိုင်ပါသည်ခင်ဗျာ။' : 'No bases found. Click + button to upload.') + '</div>';
         return;
       }
 
       var html = '';
       for (var i = 0; i < filtered.length; i++) {
         var b = filtered[i];
-        var imgUrl = b.image_url ? b.image_url.replace('https://jzsodpshhihelemowzvn.supabase.co', PROXY_URL) : 'https://placehold.co/600x400/1e293b/94a3b8?text=COC+Base';
+        var imgUrl = b.image_url || b.img;
+        if (imgUrl && imgUrl.indexOf('supabase.co') !== -1) {
+          imgUrl = imgUrl.replace('https://jzsodpshhihelemowzvn.supabase.co', PROXY_URL);
+        }
 
         html += '<div class="card">' +
           '<div class="img-wrap">' +
             '<img src="' + imgUrl + '" alt="Base" onerror="this.src=\'https://placehold.co/600x400/1e293b/94a3b8?text=COC+Base\'">' +
-            '<span class="badge-th">' + (b.th_level || 'TH') + '</span>' +
-            '<span class="badge-cat">' + (b.base_type || 'WAR') + '</span>' +
+            '<span class="badge-th">' + (b.th_level || b.th) + '</span>' +
+            '<span class="badge-cat">' + (b.base_type || b.cat) + '</span>' +
           '</div>' +
           '<div class="card-body">' +
-            '<div class="card-title">' + (b.title || 'Untitled Base') + '</div>' +
+            '<div class="card-title">' + b.title + '</div>' +
             '<div class="card-footer">' +
               '<div class="meta-info">' +
-                '<span class="meta-item"><i class="fa-regular fa-copy"></i> <b class="copy-cnt">' + (b.copy_count || 0) + '</b></span>' +
+                '<span class="meta-item"><i class="fa-regular fa-copy"></i> <b class="copy-cnt">' + (b.copy_count || b.copies || 0) + '</b></span>' +
                 '<span class="meta-time"><i class="fa-regular fa-clock"></i> <span class="time-val">' + formatTime(b.created_at) + '</span></span>' +
               '</div>' +
               '<button type="button" class="btn-copy" data-id="' + b.id + '" data-link="' + b.link + '" onclick="handleCopyBtn(this)">' +
@@ -260,23 +272,32 @@
       container.innerHTML = html;
     }
 
-    // ဆာဗာမှ လူတိုင်းတင်ထားသော Base အချက်အလက်များ တိုက်ရိုက်ဆွဲယူခြင်း
+    // ဆာဗာမှ ဒေတာဆွဲတင်ခြင်း (Background Fetch with Timeout)
     function fetchAllBases() {
+      var controller = new AbortController();
+      var timeout = setTimeout(function() { controller.abort(); }, 5000);
+
       fetch(PROXY_URL + '/rest/v1/bases?select=*&order=created_at.desc', {
+        signal: controller.signal,
         headers: {
           'apikey': API_KEY,
           'Authorization': 'Bearer ' + API_KEY
         }
       })
-      .then(function(res) { return res.json(); })
+      .then(function(res) {
+        clearTimeout(timeout);
+        return res.json();
+      })
       .then(function(data) {
-        if (Array.isArray(data)) {
+        if (Array.isArray(data) && data.length > 0) {
           allBases = data;
+          try { localStorage.setItem('stored_coc_bases', JSON.stringify(allBases)); } catch(e) {}
           renderFeed();
         }
       })
       .catch(function(err) {
-        console.error("Fetch bases error:", err);
+        console.warn("Could not load from remote server, using local data", err);
+        renderFeed();
       });
     }
 
@@ -303,7 +324,7 @@
       renderFeed();
     };
 
-    // Language Switcher
+    // Language Toggle
     document.getElementById('langToggle').onclick = function() {
       isBurmese = !isBurmese;
       this.innerText = isBurmese ? "English" : "မြန်မာစာ";
@@ -319,7 +340,7 @@
       renderFeed();
     };
 
-    // Copy Layout Action (COC Game တိုက်ရိုက်ပွင့်ခြင်း & ဆာဗာတွင် Copy count တိုးခြင်း)
+    // Copy Layout Action (COC Game တိုက်ရိုက်ပွင့်ခြင်း)
     window.handleCopyBtn = function(btn) {
       var link = btn.getAttribute('data-link');
       var id = btn.getAttribute('data-id');
@@ -327,7 +348,20 @@
 
       var cleanLink = link.trim();
 
-      // ဆာဗာတွင် copy_count ကို အလိုအလျောက် +1 တိုးစေခြင်း
+      for (var i = 0; i < allBases.length; i++) {
+        if (String(allBases[i].id) === String(id)) {
+          allBases[i].copy_count = (Number(allBases[i].copy_count || allBases[i].copies) || 0) + 1;
+          break;
+        }
+      }
+      try { localStorage.setItem('stored_coc_bases', JSON.stringify(allBases)); } catch(e) {}
+
+      var card = btn.closest('.card');
+      if (card) {
+        var cnt = card.querySelector('.copy-cnt');
+        if (cnt) cnt.innerText = parseInt(cnt.innerText || 0) + 1;
+      }
+
       fetch(PROXY_URL + '/rest/v1/rpc/increment_copy', {
         method: 'POST',
         headers: {
@@ -338,12 +372,6 @@
         body: JSON.stringify({ base_id: Number(id) })
       }).catch(function() {});
 
-      var card = btn.closest('.card');
-      if (card) {
-        var cnt = card.querySelector('.copy-cnt');
-        if (cnt) cnt.innerText = parseInt(cnt.innerText || 0) + 1;
-      }
-
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(cleanLink).catch(function() {});
       }
@@ -352,7 +380,6 @@
       if (txtSpan) txtSpan.innerText = "Copied!";
       btn.classList.add('done');
 
-      // COC ဂိမ်းထဲသို့ တိုက်ရိုက် ခုန်ကူးဖွင့်ခြင်း
       window.location.href = cleanLink;
 
       setTimeout(function() {
@@ -361,15 +388,15 @@
       }, 2000);
     };
 
-    // Modal
+    // Modal Events
     var modal = document.getElementById('modalWindow');
     document.getElementById('openAddModal').onclick = function() { modal.classList.add('show'); };
     function closeModal() { modal.classList.remove('show'); }
     document.getElementById('closeAddModal').onclick = closeModal;
     document.getElementById('cancelAddModal').onclick = closeModal;
 
-    // ဓာတ်ပုံအရွယ်အစားကို ပေါ့ပါးသွားအောင် အလိုအလျောက်ချုံ့ပြီး Blob ပြုလုပ်ပေးသည့် function
-    function compressImageBlob(file, callback) {
+    // Canvas Compression (Blob နှင့် Base64 နှစ်မျိုးစလုံး ထုတ်ယူခြင်း)
+    function compressImageFile(file, callback) {
       var reader = new FileReader();
       reader.onload = function(e) {
         var img = new Image();
@@ -377,30 +404,4 @@
           var canvas = document.createElement('canvas');
           var maxWidth = 800;
           var width = img.width;
-          var height = img.height;
-
-          if (width > maxWidth) {
-            height = Math.round((height * maxWidth) / width);
-            width = maxWidth;
-          }
-
-          canvas.width = width;
-          canvas.height = height;
-          var ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, width, height);
-
-          canvas.toBlob(function(blob) {
-            callback(blob);
-          }, 'image/jpeg', 0.7);
-        };
-        img.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
-
-    // ဆာဗာသို့ Base တင်ခြင်း (Online Database သို့ လူတိုင်းမြင်နိုင်ရန် ပို့ခြင်း)
-    document.getElementById('newPostForm').onsubmit = function(e) {
-      e.preventDefault();
-      var title = document.getElementById('newTitle').value.trim();
-      var th = document.getElementById('newTh').value;
-      var cat = do
+   
